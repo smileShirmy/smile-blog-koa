@@ -33,5 +33,10 @@
     "require-directory": "^2.1.1",
     "sequelize": "^5.8.9",
     "validator": "^11.0.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@models": "app/models",
+    "@validator": "app/validators/validator.js"
   }
 }
