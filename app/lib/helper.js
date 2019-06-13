@@ -1,4 +1,4 @@
-const { Success } = require('../../core/http-exception')
+const { Success } = require('@exception')
 
 function success(msg, errorCode) {
   throw new Success(msg, errorCode)

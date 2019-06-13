@@ -7,6 +7,36 @@ class HttpException extends Error {
   }
 }
 
+class ParameterException extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || '参数错误'
+    this.errorCode = errorCode || 10000
+    this.code = 400
+  }
+}
+
+class Success extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || 'ok'
+    this.errorCode = errorCode || 0
+    this.code = 201
+  }
+}
+
+class NotFound extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || '资源未找到'
+    this.errorCode = errorCode || 10000
+    this.code = 404
+  }
+}
+
 module.exports = {
-  HttpException
+  HttpException,
+  ParameterException,
+  Success,
+  NotFound
 }
