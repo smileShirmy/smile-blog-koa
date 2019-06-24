@@ -11,18 +11,6 @@ class PositiveIntegerValidator extends LinValidator {
   }
 }
 
-class AddArticleValidator extends LinValidator {
-  constructor() {
-    super()
-    this.content = [
-      new Rule('isLength', '文章内容不能为空', {
-        min: 1
-      })
-    ]
-  }
-}
-
 module.exports = {
-  PositiveIntegerValidator,
-  AddArticleValidator
+  PositiveIntegerValidator
 }

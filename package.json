@@ -37,7 +37,7 @@
   "_moduleAliases": {
     "@root": ".",
     "@models": "app/models",
-    "@validator": "app/validators/validator.js",
+    "@validator": "app/validators",
     "@exception": "core/http-exception"
   }
 }
