@@ -37,6 +37,16 @@ class Comment extends Model {
     }
     comment.destroy()
   }
+
+  static async likeComment(id) {
+    const comment = await Comment.findByPk(id)
+    if (!comment) {
+      throw new NotFound({
+        msg: '没有找到相关评论'
+      })
+    }
+    await comment.increment('like', { by: 1 })
+  }
 }
 
 Comment.init({
@@ -46,6 +56,11 @@ Comment.init({
   },
   content: {
     type: Sequelize.STRING(1023),
+    allowNull: false
+  },
+  like: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
     allowNull: false
   },
   email: {

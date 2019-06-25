@@ -64,4 +64,17 @@ articleApi.delete('/del/comment', async (ctx) => {
   })
 })
 
+articleApi.put('/like/comment', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const id = v.get('query.id')
+  await Comment.likeComment(id)
+  success({
+    msg: '点赞评论成功'
+  })
+})
+
+articleApi.post('/reply/comment', async (ctx) => {
+  
+})
+
 module.exports = articleApi
