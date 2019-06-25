@@ -2,7 +2,7 @@ const Router = require('koa-router')
 const { Article } = require('@models/article')
 const { Comment } = require('@models/comment')
 const { PositiveIntegerValidator } = require('@validator/validator')
-const { CreateOrUpdateArticleValidator, AddCommentValidator } = require('@validator/article')
+const { CreateOrUpdateArticleValidator, AddCommentValidator, ReplyCommentValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
 
 const articleApi = new Router({
@@ -74,7 +74,15 @@ articleApi.put('/like/comment', async (ctx) => {
 })
 
 articleApi.post('/reply/comment', async (ctx) => {
-  
+  const v = await new ReplyCommentValidator().validate(ctx, {
+    id: 'parentId'
+  })
+  const articleId = v.get('body.articleId')
+  const parentId = v.get('body.parentId')
+  await Comment.replyComment(v, articleId, parentId)
+  success({
+    msg: '回复成功'
+  })
 })
 
 module.exports = articleApi

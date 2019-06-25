@@ -44,8 +44,19 @@ class AddCommentValidator extends PositiveIntegerValidator {
   }
 }
 
+class ReplyCommentValidator extends AddCommentValidator {
+  constructor() {
+    super()
+    this.parentId = [
+      new Rule('isOptional'),
+      new Rule('isInt', '需要是正整数')
+    ]
+  }
+}
+
 
 module.exports = {
   CreateOrUpdateArticleValidator,
-  AddCommentValidator
+  AddCommentValidator,
+  ReplyCommentValidator
 }

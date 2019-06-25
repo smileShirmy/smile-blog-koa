@@ -1,9 +1,16 @@
 const { sequelize } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 const { NotFound } = require('@exception')
+const { Article } = require('@models/article')
 
 class Comment extends Model {
   static async addComment(v, articleId) {
+    const article = await Article.getArticle(articleId)
+    if (!article) {
+      throw new NotFound({
+        msg: '没有找到相关文章'
+      })
+    }
     return await Comment.create({
       nickname: v.get('body.nickname'),
       content: v.get('body.content'),
@@ -47,9 +54,37 @@ class Comment extends Model {
     }
     await comment.increment('like', { by: 1 })
   }
+
+  static async replyComment(v, articleId, parentId) {
+    const article = await Article.findByPk(articleId)
+    if (!article) {
+      throw new NotFound({
+        msg: '没有找到相关文章'
+      })
+    }
+    const comment = await Comment.findByPk(parentId)
+    if (!comment) {
+      throw new NotFound({
+        msg: '没有找到相关评论'
+      })
+    }
+    return await Comment.create({
+      parent_id: parentId,
+      article_id: articleId,
+      nickname: v.get('body.nickname'),
+      content: v.get('body.content'),
+      email: v.get('v.email'),
+      website: v.get('website'),
+    })
+  }
 }
 
 Comment.init({
+  parent_id: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+    allowNull: false,
+  },
   nickname: {
     type: Sequelize.STRING(32),
     allowNull: false
