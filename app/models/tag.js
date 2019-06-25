@@ -9,7 +9,7 @@ class Tag extends Model {
         name: v.get('body.name'),
         deleted_at: null
       }
-    });
+    })
     if (tag) {
       throw new Forbidden({
         msg: '标签已存在'

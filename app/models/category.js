@@ -9,7 +9,7 @@ class Category extends Model {
         name: v.get('body.name'),
         deleted_at: null
       }
-    });
+    })
     if (category) {
       throw new Forbidden({
         msg: '分类已存在'
@@ -26,8 +26,8 @@ class Category extends Model {
       where: {
         deleted_at: null
       }
-    });
-    return categories;
+    })
+    return categories
   }
 
   static async updateCategory(v, id) {

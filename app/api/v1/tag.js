@@ -12,11 +12,6 @@ const tagApi = new Router({
 
 tagApi.get('/tags', async (ctx) => {
   const tags = await Tag.getTags()
-  if (!tags.length) {
-    throw new NotFound({
-      msg: '没有找到相关标签'
-    })
-  }
   ctx.body = tags
 })
 

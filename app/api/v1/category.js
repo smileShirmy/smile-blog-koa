@@ -12,11 +12,6 @@ const categoryApi = new Router({
 
 categoryApi.get('/categories', async (ctx) => {
   const categories = await Category.getCategories()
-  if (!categories.length) {
-    throw new NotFound({
-      msg: '没有找到相关分类'
-    })
-  }
   ctx.body = categories
 })
 
