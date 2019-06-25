@@ -49,6 +49,21 @@ class Tag extends Model {
     tag.name = v.get('body.name')
     tag.save()
   }
+
+  static async deleteTag(id) {
+    const tag = await Tag.findOne({
+      where: {
+        id,
+        deleted_at: null
+      }
+    })
+    if (!tag) {
+      throw new NotFound({
+        msg: '没有找到相关标签'
+      })
+    }
+    tag.destroy()
+  }
 }
 
 Tag.init({

@@ -42,6 +42,20 @@ class Category extends Model {
     category.save()
   }
 
+  static async deleteCategory(id) {
+    const category = await Category.findOne({
+      where: {
+        id,
+        deleted_at: null
+      }
+    })
+    if (!category) {
+      throw new NotFound({
+        msg: '没有找到相关分类'
+      })
+    }
+    category.destroy()
+  }
 }
 
 Category.init({

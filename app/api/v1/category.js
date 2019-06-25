@@ -37,4 +37,13 @@ categoryApi.put('/', async (ctx) => {
   })
 })
 
+categoryApi.delete('/', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const id = v.get('query.id')
+  await Category.deleteCategory(id)
+  success({
+    msg: '删除分类成功'
+  })
+})
+
 module.exports = categoryApi

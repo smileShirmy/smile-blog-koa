@@ -49,4 +49,13 @@ tagApi.put('/', async (ctx) => {
   })
 })
 
+tagApi.delete('/', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const id = v.get('query.id')
+  await Tag.deleteTag(id)
+  success({
+    msg: '删除标签成功'
+  })
+})
+
 module.exports = tagApi
