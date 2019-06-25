@@ -30,6 +30,15 @@ class Article extends Model {
     })
     return article
   }
+
+  static async getArticles() {
+    const articles = await Article.findAll({
+      where: {
+        deleted_at: null
+      }
+    })
+    return articles
+  }
 }
 
 Article.init({

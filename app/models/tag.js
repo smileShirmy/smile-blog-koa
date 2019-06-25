@@ -12,7 +12,7 @@ class Tag extends Model {
     });
     if (tag) {
       throw new Forbidden({
-        msg: '图书已存在'
+        msg: '标签已存在'
       })
     }
     return await Tag.create({
@@ -28,6 +28,15 @@ class Tag extends Model {
       }
     })
     return tag
+  }
+
+  static async getTags() {
+    const tags = Tag.findAll({
+      where: {
+        deleted_at: null
+      }
+    })
+    return tags
   }
 
   static async updateTag(v, id) {

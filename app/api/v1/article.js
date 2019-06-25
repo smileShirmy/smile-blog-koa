@@ -4,11 +4,11 @@ const { PositiveIntegerValidator } = require('@validator/validator')
 const { CreateOrUpdateArticleValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
 
-const router = new Router({
+const articleApi = new Router({
   prefix: '/v1/article'
 })
 
-router.post('/', async (ctx) => {
+articleApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateArticleValidator().validate(ctx)
   await Article.createArticle(v)
   success({
@@ -16,7 +16,7 @@ router.post('/', async (ctx) => {
   })
 })
 
-router.get('/get', async (ctx) => {
+articleApi.get('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const article = await Article.getArticle(v.get('query.id'))
   if (!article) {
@@ -27,4 +27,14 @@ router.get('/get', async (ctx) => {
   ctx.body = article
 })
 
-module.exports = router
+articleApi.get('/articles', async (ctx) => {
+  const articles = await Article.getArticles()
+  if (!articles.length) {
+    throw new NotFound({
+      msg: '没有找到相关文章'
+    })
+  }
+  ctx.body = articles
+})
+
+module.exports = articleApi

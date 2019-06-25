@@ -10,6 +10,16 @@ const tagApi = new Router({
   prefix: '/v1/tag'
 })
 
+tagApi.get('/tags', async (ctx) => {
+  const tags = await Tag.getTags()
+  if (!tags.length) {
+    throw new NotFound({
+      msg: '没有找到相关标签'
+    })
+  }
+  ctx.body = tags
+})
+
 tagApi.get('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
