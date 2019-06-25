@@ -15,6 +15,9 @@ class CreateOrUpdateArticleValidator extends LinValidator {
         min: 1
       })
     ]
+    this.categoryId = [
+      new Rule('isInt', '分类ID需要是正整数')
+    ]
   }
 }
 

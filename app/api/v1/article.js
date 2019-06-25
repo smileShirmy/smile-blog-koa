@@ -4,6 +4,7 @@ const { Comment } = require('@models/comment')
 const { PositiveIntegerValidator } = require('@validator/validator')
 const { CreateOrUpdateArticleValidator, AddCommentValidator, ReplyCommentValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
+const { ArticleTag } = require('@models/articleTag')
 
 const articleApi = new Router({
   prefix: '/v1/article'
@@ -11,7 +12,8 @@ const articleApi = new Router({
 
 articleApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateArticleValidator().validate(ctx)
-  await Article.createArticle(v)
+  const categoryId = v.get('body.categoryId')
+  await Article.createArticle(v, categoryId)
   success({
     msg: '新建文章成功'
   })
@@ -19,12 +21,8 @@ articleApi.post('/', async (ctx) => {
 
 articleApi.get('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
-  const article = await Article.getArticle(v.get('query.id'))
-  if (!article) {
-    throw new NotFound({
-      msg: '没有找到相关文章'
-    })
-  }
+  const { article, tags } = await Article.getArticle(v.get('query.id'))
+  article.setDataValue('tags', tags)
   ctx.body = article
 })
 

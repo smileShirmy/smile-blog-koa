@@ -21,6 +21,16 @@ class Category extends Model {
     })
   }
 
+  static async getCategory(id) {
+    const category = await Category.findOne({
+      where: {
+        id,
+        deleted_at: null
+      }
+    })
+    return category
+  }
+
   static async getCategories() {
     const categories = await Category.findAll({
       where: {
