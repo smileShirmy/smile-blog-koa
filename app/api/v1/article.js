@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 
 const { PositiveIntegerValidator } = require('@validator/validator')
-const { CreateOrUpdateArticleValidator, AddCommentValidator, ReplyCommentValidator } = require('@validator/article')
+const { CreateOrUpdateArticleValidator, CreateCommentValidator, ReplyCommentValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
 
 const { ArticleDao } = require('@dao/article')
@@ -38,11 +38,11 @@ articleApi.get('/articles', async (ctx) => {
 })
 
 articleApi.post('/add/comment', async (ctx) => {
-  const v = await new AddCommentValidator().validate(ctx, {
+  const v = await new CreateCommentValidator().validate(ctx, {
     id: 'articleId'
   })
   const articleId = v.get('body.articleId')
-  await CommentDto.addComment(v, articleId)
+  await CommentDto.createComment(v, articleId)
   success({
     msg: '添加评论成功'
   })

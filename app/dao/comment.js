@@ -5,7 +5,7 @@ const { ArticleDao } = require('@dao/article')
 const ArticleDto = new ArticleDao()
 
 class CommentDao {
-  async addComment(v, articleId) {
+  async createComment(v, articleId) {
     const article = await ArticleDto.getArticle(articleId)
     if (!article) {
       throw new NotFound({

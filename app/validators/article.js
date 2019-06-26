@@ -21,7 +21,7 @@ class CreateOrUpdateArticleValidator extends LinValidator {
   }
 }
 
-class AddCommentValidator extends PositiveIntegerValidator {
+class CreateCommentValidator extends PositiveIntegerValidator {
   constructor() {
     super()
     this.nickname = [
@@ -47,7 +47,7 @@ class AddCommentValidator extends PositiveIntegerValidator {
   }
 }
 
-class ReplyCommentValidator extends AddCommentValidator {
+class ReplyCommentValidator extends CreateCommentValidator {
   constructor() {
     super()
     this.parentId = [
@@ -60,6 +60,6 @@ class ReplyCommentValidator extends AddCommentValidator {
 
 module.exports = {
   CreateOrUpdateArticleValidator,
-  AddCommentValidator,
+  CreateCommentValidator,
   ReplyCommentValidator
 }
