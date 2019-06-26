@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const { Tag } = require('@models/tag')
+const { TagDao } = require('@dao/tag')
 const { success } = require('../../lib/helper')
 const { CreateOrUpdateTagValidator } = require('@validator/tag')
 const { getSafeParamId } = require('../../lib/util')
@@ -10,15 +10,17 @@ const tagApi = new Router({
   prefix: '/v1/tag'
 })
 
+const TagDto = new TagDao()
+
 tagApi.get('/tags', async (ctx) => {
-  const tags = await Tag.getTags()
+  const tags = await TagDto.getTags()
   ctx.body = tags
 })
 
 tagApi.get('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
-  const tag = await Tag.getTag(id)
+  const tag = await TagDto.getTag(id)
   if (!tag) {
     throw new NotFound({
       msg: '没有找到相关标签'
@@ -29,7 +31,7 @@ tagApi.get('/', async (ctx) => {
 
 tagApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
-  await Tag.createTag(v)
+  await TagDto.createTag(v)
   success({
     msg: '新建标签成功'
   })
@@ -38,7 +40,7 @@ tagApi.post('/', async (ctx) => {
 tagApi.put('/', async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
   const id = getSafeParamId(v)
-  await Tag.updateTag(v, id)
+  await TagDto.updateTag(v, id)
   success({
     msg: '更新标签成功'
   })
@@ -47,7 +49,7 @@ tagApi.put('/', async (ctx) => {
 tagApi.delete('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
-  await Tag.deleteTag(id)
+  await TagDto.deleteTag(id)
   success({
     msg: '删除标签成功'
   })

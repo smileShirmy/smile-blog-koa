@@ -1,23 +1,26 @@
 const Router = require('koa-router')
-const { Category } = require('@models/category')
+
 const { CreateOrUpdateCategoryValidator } = require('@validator/category')
 const { PositiveIntegerValidator } = require('@validator/validator')
-const { NotFound } = require('@exception')
 const { success } = require('../../lib/helper')
 const { getSafeParamId } = require('../../lib/util')
+
+const { CategoryDao } = require('@dao/category')
 
 const categoryApi = new Router({
   prefix: '/v1/category'
 })
 
+const CategoryDto = new CategoryDao()
+
 categoryApi.get('/categories', async (ctx) => {
-  const categories = await Category.getCategories()
+  const categories = await CategoryDto.getCategories()
   ctx.body = categories
 })
 
 categoryApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateCategoryValidator().validate(ctx)
-  await Category.createCategory(v)
+  await CategoryDto.createCategory(v)
   success({
     msg: '新建分类成功'
   })
@@ -26,7 +29,7 @@ categoryApi.post('/', async (ctx) => {
 categoryApi.put('/', async (ctx) => {
   const v = await new CreateOrUpdateCategoryValidator().validate(ctx)
   const id = getSafeParamId(v)
-  await Category.updateCategory(v, id)
+  await CategoryDto.updateCategory(v, id)
   success({
     msg: '更新分类成功'
   })
@@ -35,7 +38,7 @@ categoryApi.put('/', async (ctx) => {
 categoryApi.delete('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
-  await Category.deleteCategory(id)
+  await CategoryDto.deleteCategory(id)
   success({
     msg: '删除分类成功'
   })

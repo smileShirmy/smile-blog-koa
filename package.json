@@ -37,6 +37,7 @@
   "_moduleAliases": {
     "@root": ".",
     "@models": "app/models",
+    "@dao": "app/dao",
     "@validator": "app/validators",
     "@exception": "core/http-exception"
   }
