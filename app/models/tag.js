@@ -6,8 +6,7 @@ class Tag extends Model {
   static async createTag(v) {
     const tag = await Tag.findOne({
       where: {
-        name: v.get('body.name'),
-        deleted_at: null
+        name: v.get('body.name')
       }
     })
     if (tag) {
@@ -23,19 +22,14 @@ class Tag extends Model {
   static async getTag(id) {
     const tag = Tag.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     return tag
   }
 
   static async getTags() {
-    const tags = Tag.findAll({
-      where: {
-        deleted_at: null
-      }
-    })
+    const tags = Tag.findAll()
     return tags
   }
 
@@ -53,8 +47,7 @@ class Tag extends Model {
   static async deleteTag(id) {
     const tag = await Tag.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     if (!tag) {

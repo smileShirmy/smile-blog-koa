@@ -6,8 +6,7 @@ class Category extends Model {
   static async createCategory(v) {
     const category = await Category.findOne({
       where: {
-        name: v.get('body.name'),
-        deleted_at: null
+        name: v.get('body.name')
       }
     })
     if (category) {
@@ -24,19 +23,14 @@ class Category extends Model {
   static async getCategory(id) {
     const category = await Category.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     return category
   }
 
   static async getCategories() {
-    const categories = await Category.findAll({
-      where: {
-        deleted_at: null
-      }
-    })
+    const categories = await Category.findAll()
     return categories
   }
 
@@ -55,8 +49,7 @@ class Category extends Model {
   static async deleteCategory(id) {
     const category = await Category.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     if (!category) {

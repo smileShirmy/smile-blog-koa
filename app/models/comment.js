@@ -23,8 +23,7 @@ class Comment extends Model {
   static async getComments(articleId) {
     const comments = await Comment.findAll({
       where: {
-        article_id: articleId,
-        deleted_at: null
+        article_id: articleId
       }
     })
     return comments
@@ -33,8 +32,7 @@ class Comment extends Model {
   static async deleteComment(id) {
     const comment = await Comment.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     if (!comment) {

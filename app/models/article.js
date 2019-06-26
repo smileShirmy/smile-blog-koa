@@ -8,8 +8,7 @@ class Article extends Model {
   static async createArticle(v, categoryId) {
     const article = await Article.findOne({
       where: {
-        title: v.get('body.title'),
-        deleted_at: null
+        title: v.get('body.title')
       }
     })
     if (article) {
@@ -39,8 +38,7 @@ class Article extends Model {
   static async getArticle(id) {
     const article = await Article.findOne({
       where: {
-        id,
-        deleted_at: null
+        id
       }
     })
     if (!article) {
@@ -55,11 +53,7 @@ class Article extends Model {
   }
 
   static async getArticles() {
-    const articles = await Article.findAll({
-      where: {
-        deleted_at: null
-      }
-    })
+    const articles = await Article.findAll()
     return articles
   }
 }
