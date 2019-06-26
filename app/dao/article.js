@@ -27,16 +27,13 @@ class ArticleDao {
         msg: '未能找到相关分类'
       })
     }
-    const tags = v.get('body.tags')
-
     return sequelize.transaction(async t => {
       const result =  await Article.create({
         title: v.get('body.title'),
         content: v.get('body.content'),
-        category_id: categoryId,
-        tags
+        category_id: categoryId
       }, { transaction: t })
-      await ArticleTagDto.createArticleTag(result.getDataValue('id'), tags, t)
+      await ArticleTagDto.createArticleTag(result.getDataValue('id'), v.get('body.tags'), t)
     })
   }
 

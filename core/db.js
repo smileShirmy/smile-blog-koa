@@ -34,7 +34,7 @@ const sequelize = new Sequelize(dbName, user, password, {
 
 // 设为 true 会重新创建数据表
 sequelize.sync({
-  force: false
+  force: true
 })
 
 // 全局序列化

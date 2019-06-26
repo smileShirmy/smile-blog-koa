@@ -14,12 +14,12 @@ Article.init({
     type: Sequelize.TEXT,
     allowNull: false
   },
+  cover: {
+    type: Sequelize.STRING(255),
+    allowNull: false,
+  },
   category_id: {
     type: Sequelize.INTEGER,
-    allowNull: false
-  },
-  tags: {
-    type: Sequelize.STRING(127),
     allowNull: false
   }
 }, {

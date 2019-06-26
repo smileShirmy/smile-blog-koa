@@ -15,6 +15,9 @@ class CreateOrUpdateArticleValidator extends LinValidator {
         min: 1
       })
     ]
+    this.cover =[
+      new Rule('isURL', '不符合URL规范')
+    ]
     this.categoryId = [
       new Rule('isInt', '分类ID需要是正整数', {
         min: 1

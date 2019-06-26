@@ -29,7 +29,7 @@ Comment.init({
     allowNull: true
   },
   website: {
-    type: Sequelize.STRING(127),
+    type: Sequelize.STRING(255),
     allowNull: true,
   },
   article_id: {
