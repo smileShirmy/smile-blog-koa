@@ -8,7 +8,13 @@ module.exports = {
     password: ''
   },
   pagination: {
-    pageDefault: 0,    // 分页默认页码
-    countDefault: 5    // 分页默认一页的数量
-  }
+    pageDefault: 0,     // 分页默认页码
+    countDefault: 10    // 分页默认一页的数量
+  },
+  // JWT
+  security: {
+    secretKey: '',
+    expiresIn: 60 * 60 * 2
+  },
+  host: 'http://localhost:3000'
 }

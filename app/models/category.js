@@ -8,7 +8,8 @@ class Category extends Model {
 Category.init({
   name: {
     type: Sequelize.STRING(64),
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   description: {
     type: Sequelize.STRING(255),

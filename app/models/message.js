@@ -7,7 +7,7 @@ class Message extends Model {
       id: this.id,
       nickname: this.nickname,
       content: this.content,
-      createTime: this.created_at
+      createTime: this.createTime
     }
     return origin
   }
@@ -23,7 +23,12 @@ Message.init({
   }
 }, {
   sequelize,
-  tableName: 'message'
+  tableName: 'message',
+  getterMethods: {
+    createTime() {
+      return this.getDataValue('created_at')
+    }
+  }
 })
 
 module.exports = {

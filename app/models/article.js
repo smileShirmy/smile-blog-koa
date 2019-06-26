@@ -8,7 +8,8 @@ class Article extends Model {
 Article.init({
   title: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   content: {
     type: Sequelize.TEXT,
@@ -16,7 +17,7 @@ Article.init({
   },
   cover: {
     type: Sequelize.STRING(255),
-    allowNull: false,
+    allowNull: false
   },
   category_id: {
     type: Sequelize.INTEGER,

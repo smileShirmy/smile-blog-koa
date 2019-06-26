@@ -6,15 +6,17 @@ const {
   host,
   port,
   user,
-  password
+  password,
+  logging,
+  timezone
 } = require('../config/config').database
 
 const sequelize = new Sequelize(dbName, user, password, {
   dialect: 'mysql',
   host,
   port,
-  logging: true,
-  timezone: '+8:00',
+  logging,
+  timezone,
   define: {
     timestamps: true,
     paranoid: true,
@@ -34,7 +36,7 @@ const sequelize = new Sequelize(dbName, user, password, {
 
 // 设为 true 会重新创建数据表
 sequelize.sync({
-  force: true
+  force: false
 })
 
 // 全局序列化

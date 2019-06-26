@@ -8,7 +8,8 @@ class Tag extends Model {
 Tag.init({
   name: {
     type: Sequelize.STRING(64),
-    allowNull: false
+    allowNull: false,
+    unique: true
   }
 }, {
   sequelize,
