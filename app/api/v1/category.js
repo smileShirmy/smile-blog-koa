@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 
 const { CreateOrUpdateCategoryValidator } = require('@validator/category')
-const { PositiveIntegerValidator } = require('@validator/validator')
+const { PositiveIntegerValidator } = require('@validator/common')
 const { success } = require('../../lib/helper')
 const { getSafeParamId } = require('../../lib/util')
 

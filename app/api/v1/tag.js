@@ -4,7 +4,7 @@ const { success } = require('../../lib/helper')
 const { CreateOrUpdateTagValidator } = require('@validator/tag')
 const { getSafeParamId } = require('../../lib/util')
 const { NotFound } = require('@exception')
-const { PositiveIntegerValidator } = require('@validator/validator')
+const { PositiveIntegerValidator } = require('@validator/common')
 
 const tagApi = new Router({
   prefix: '/v1/tag'

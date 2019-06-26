@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 
-const { PositiveIntegerValidator } = require('@validator/validator')
+const { PositiveIntegerValidator } = require('@validator/common')
 const { CreateOrUpdateArticleValidator, CreateCommentValidator, ReplyCommentValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
 

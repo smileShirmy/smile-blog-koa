@@ -8,8 +8,18 @@ class MessageDao {
     })
   }
 
-  async getMessages() {
-    return await Message.findAll()
+  async getMessages(v) {
+    const start = v.get('query.page');
+    const pageCount = v.get('query.count');
+
+    const { rows, count } = await Message.findAndCountAll({
+      offset: start * pageCount,
+      limit: pageCount
+    })
+    return {
+      rows,
+      total: count
+    }
   }
 
   async deleteMessage(id) {

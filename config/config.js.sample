@@ -6,5 +6,9 @@ module.exports = {
     port: 3306,
     user: '',
     password: ''
+  },
+  pagination: {
+    pageDefault: 0,    // 分页默认页码
+    countDefault: 5    // 分页默认一页的数量
   }
 }

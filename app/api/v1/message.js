@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 
-const { PositiveIntegerValidator } = require('@validator/validator')
+const { PositiveIntegerValidator, PaginateValidator } = require('@validator/common')
 const { CreateMessageValidator } = require('@validator/message')
 const { success } = require('../../lib/helper')
 
@@ -21,8 +21,12 @@ messageApi.post('/', async (ctx) => {
 })
 
 messageApi.get('/messages', async (ctx) => {
-  const messages = await MessageDto.getMessages()
-  ctx.body = messages
+  const v = await new PaginateValidator().validate(ctx)
+  const { rows, total } = await MessageDto.getMessages(v)
+  ctx.body = {
+    collection: rows,
+    total,
+  }
 })
 
 messageApi.delete('/', async (ctx) => {

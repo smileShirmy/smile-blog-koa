@@ -1,5 +1,5 @@
 const { LinValidator, Rule } = require('../../core/lin-validator')
-const { PositiveIntegerValidator} = require('./validator')
+const { PositiveIntegerValidator} = require('./common')
 
 class CreateOrUpdateArticleValidator extends LinValidator {
   constructor() {
@@ -16,7 +16,9 @@ class CreateOrUpdateArticleValidator extends LinValidator {
       })
     ]
     this.categoryId = [
-      new Rule('isInt', '分类ID需要是正整数')
+      new Rule('isInt', '分类ID需要是正整数', {
+        min: 1
+      })
     ]
   }
 }
@@ -52,7 +54,9 @@ class ReplyCommentValidator extends CreateCommentValidator {
     super()
     this.parentId = [
       new Rule('isOptional'),
-      new Rule('isInt', '需要是正整数')
+      new Rule('isInt', '需要是正整数', {
+        min: 1
+      })
     ]
   }
 }
