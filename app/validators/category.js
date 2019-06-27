@@ -9,6 +9,9 @@ class CreateOrUpdateCategoryValidator extends LinValidator {
         max: 64
       })
     ]
+    this.cover = [
+      new Rule('isURL', '不符合URL规范')
+    ]
     this.description = [
       new Rule('isLength', '分类描述必须在1~255个字符之间', {
         min: 1,

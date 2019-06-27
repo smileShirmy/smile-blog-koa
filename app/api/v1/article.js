@@ -27,8 +27,9 @@ articleApi.post('/', async (ctx) => {
 
 articleApi.get('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
-  const { article, tags } = await ArticleDto.getArticle(v.get('query.id'))
+  const { article, tags, authors } = await ArticleDto.getArticle(v.get('query.id'))
   article.setDataValue('tags', tags)
+  article.setDataValue('authors', authors)
   ctx.body = article
 })
 

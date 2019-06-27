@@ -4,9 +4,11 @@ const { NotFound, Forbidden } = require('@exception')
 
 const { Article } = require('@models/article')
 const { ArticleTagDao } = require('@dao/articleTag')
+const { ArticleAuthorDao } = require('@dao/articleAuthor')
 const { CategoryDao } = require('@dao/category')
 
 const ArticleTagDto = new ArticleTagDao()
+const ArticleAuthorDto = new ArticleAuthorDao()
 const CategoryDto = new CategoryDao()
 
 class ArticleDao {
@@ -31,9 +33,12 @@ class ArticleDao {
       const result =  await Article.create({
         title: v.get('body.title'),
         content: v.get('body.content'),
+        cover: v.get('body.cover'),
         category_id: categoryId
       }, { transaction: t })
-      await ArticleTagDto.createArticleTag(result.getDataValue('id'), v.get('body.tags'), t)
+      const articleId = result.getDataValue('id')
+      await ArticleTagDto.createArticleTag(articleId, v.get('body.tags'), t)
+      await ArticleAuthorDto.createArticleAuthor(articleId, v.get('body.authors'), t)
     })
   }
 
@@ -49,9 +54,10 @@ class ArticleDao {
       })
     }
     const tags = await ArticleTagDto.getArticleTag(id)
+    const authors = await ArticleAuthorDto.getArticleAuthor(id)
     const category = await CategoryDto.getCategory(article.getDataValue('category_id'))
     article.setDataValue('category', category)
-    return { article, tags }
+    return { article, tags, authors }
   }
 
   async getArticles() {

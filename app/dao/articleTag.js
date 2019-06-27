@@ -22,7 +22,7 @@ class ArticleTagDao {
     })
     let ids = []
     tagIds.forEach(tag => {
-      ids.push(tag.id)
+      ids.push(tag.tag_id)
     })
     return await Tag.findAll({
       where: {

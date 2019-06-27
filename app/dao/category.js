@@ -15,6 +15,7 @@ class CategoryDao {
     }
     return await Category.create({
       name: v.get('body.name'),
+      cover: v.get('body.cover'),
       description: v.get('body.description')
     })
   }

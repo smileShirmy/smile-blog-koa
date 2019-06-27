@@ -2,14 +2,16 @@ const Router = require('koa-router')
 
 const { success } = require('../../lib/helper')
 const { CreateAuthorValidator, LoginValidator } = require('@validator/author')
-const { NotEmptyValidator } = require('@validator/common')
+const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
 const { AuthType } = require('../../lib/enums')
 const { Auth } = require('../../../middleware/auth')
 
 const { AuthorDao } = require('@dao/author')
+const { ArticleAuthorDao } = require('@dao/articleAuthor')
 
 const AuthorDto = new AuthorDao()
+const ArticleAuthorDto = new ArticleAuthorDao()
 
 const authorApi = new Router({
   prefix: '/v1/author'
@@ -51,6 +53,15 @@ authorApi.post('/verify', async (ctx) => {
   ctx.body = {
     isValid: result,
   }
+})
+
+authorApi.get('/articles', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx, {
+    id: 'authorId'
+  })
+  const id = v.get('query.authorId')
+  const articles = await ArticleAuthorDto.getAuthorArticles(id)
+  ctx.body = articles
 })
 
 module.exports = authorApi

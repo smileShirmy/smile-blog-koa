@@ -14,7 +14,11 @@ Category.init({
   description: {
     type: Sequelize.STRING(255),
     allowNull: false,
-  }
+  },
+  cover: {
+    type: Sequelize.STRING(255),
+    allowNull: false
+  },
 }, {
   sequelize,
   tableName: 'category'

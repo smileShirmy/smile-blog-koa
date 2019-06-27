@@ -1,5 +1,6 @@
 const { Author } = require('@models/author')
 const { AuthFailed } = require('@exception')
+const { ArticleAuthorDao } = require('@dao/articleAuthor')
 const bcrypt = require('bcryptjs')
 
 class AuthorDao {
