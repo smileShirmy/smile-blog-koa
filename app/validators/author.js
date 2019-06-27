@@ -1,5 +1,5 @@
 const { LinValidator, Rule } = require('../../core/lin-validator')
-const { Auth } = require('../../middleware/auth')
+const { AuthType } = require('../lib/enums')
 
 class CreateAuthorValidator extends LinValidator {
   constructor() {
@@ -29,9 +29,18 @@ class CreateAuthorValidator extends LinValidator {
         max: 255
       })
     ]
-    this.auth = [
-      new Rule('isInt')
-    ]
+    this.validateAuth = checkAuth
+  }
+}
+
+function checkAuth(val) {
+  let auth = val.body.auth
+  if (!auth) {
+    throw new Error('auth是必须参数')
+  }
+  auth = parseInt(auth)
+  if (!AuthType.isThisType(auth)) {
+    throw new Error('auth参数不合法')
   }
 }
 

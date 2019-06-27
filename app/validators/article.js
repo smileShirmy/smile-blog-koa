@@ -4,6 +4,8 @@ const { PositiveIntegerValidator} = require('./common')
 class CreateOrUpdateArticleValidator extends LinValidator {
   constructor() {
     super()
+    this.validateTags = checkTags
+    this.validateAuthors = checkAuthors
     this.title = [
       new Rule('isLength', '标题必须在1~64个字符之间', {
         min: 1,
@@ -23,6 +25,36 @@ class CreateOrUpdateArticleValidator extends LinValidator {
         min: 1
       })
     ]
+  }
+}
+
+function checkTags(val) {
+  let tags = val.body.tags
+  if (!tags) {
+    throw new Error('tags是必须参数')
+  }
+  try {
+    tags = JSON.parse(tags)
+  } catch (error) {
+    throw new Error('tags参数不合法')
+  }
+  if (!Array.isArray(tags)) {
+    throw new Error('tags必须是元素都为正整数的数组')
+  }
+}
+
+function checkAuthors(val) {
+  let authors = val.body.authors
+  if (!authors) {
+    throw new Error('authors是必须参数')
+  }
+  try {
+    authors = JSON.parse(authors)
+  } catch (error) {
+    throw new Error('authors参数不合法')
+  }
+  if (!Array.isArray(authors)) {
+    throw new Error('authors必须是元素都为正整数的数组')
   }
 }
 

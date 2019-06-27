@@ -1,10 +1,20 @@
 const { Author } = require('@models/author')
-const { AuthFailed } = require('@exception')
-const { ArticleAuthorDao } = require('@dao/articleAuthor')
+const { AuthFailed, Forbidden } = require('@exception')
 const bcrypt = require('bcryptjs')
 
 class AuthorDao {
   async createAuthor(v) {
+    const name = v.get('body.name')
+    const author = await Author.findOne({
+      where: {
+        name
+      }
+    })
+    if (author) {
+      throw new Forbidden({
+        msg: '已存在该作者名'
+      })
+    }
     await Author.create({
       name: v.get('body.name'),
       avatar: v.get('body.avatar'),

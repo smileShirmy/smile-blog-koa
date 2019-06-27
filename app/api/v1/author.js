@@ -4,7 +4,6 @@ const { success } = require('../../lib/helper')
 const { CreateAuthorValidator, LoginValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
-const { AuthType } = require('../../lib/enums')
 const { Auth } = require('../../../middleware/auth')
 
 const { AuthorDao } = require('@dao/author')
@@ -19,15 +18,6 @@ const authorApi = new Router({
 
 authorApi.post('/', async (ctx) => {
   const v = await new CreateAuthorValidator().validate(ctx)
-
-  let auth = v.get('body.auth')
-  if (!auth) {
-    throw new Error('auth是必须参数')
-  }
-  auth = parseInt(auth)
-  if (!AuthType.isThisType(auth)) {
-    throw new Error('auth参数不合法')
-  }
 
   await AuthorDto.createAuthor(v)
   success({
