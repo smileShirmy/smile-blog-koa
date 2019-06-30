@@ -5,6 +5,7 @@ const { CreateAuthorValidator, LoginValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middleware/auth')
+const { AuthType } = require('../../lib/enums')
 
 const { AuthorDao } = require('@dao/author')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
@@ -30,10 +31,13 @@ authorApi.post('/login', async (ctx) => {
   const name = v.get('body.name')
   const password = v.get('body.password')
 
-  const author = await AuthorDto.verifyEmailPassword(name, password)
-  const token =  generateToken(author.id, AuthType.USER)
+  const author = await AuthorDto.verifyEmailPassword(ctx, name, password)
+
+  const accessToken = generateToken(author.id, AuthType.USER, { expiresIn: global.config.security.accessExp })
+  const refreshToken = generateToken(author.id, AuthType.USER, { expiresIn: global.config.security.refreshExp })
   ctx.body = {
-    token
+    accessToken,
+    refreshToken
   }
 })
 
@@ -52,6 +56,10 @@ authorApi.get('/articles', async (ctx) => {
   const id = v.get('query.authorId')
   const articles = await ArticleAuthorDto.getAuthorArticles(id)
   ctx.body = articles
+})
+
+authorApi.get('/info', new Auth().m, async (ctx) => {
+  ctx.body = ctx.currentAuthor
 })
 
 module.exports = authorApi

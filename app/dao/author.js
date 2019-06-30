@@ -25,7 +25,7 @@ class AuthorDao {
     })
   }
 
-  async verifyEmailPassword(name, password) {
+  async verifyEmailPassword(ctx, name, password) {
     const author = await Author.findOne({
       where: {
         name
@@ -38,6 +38,7 @@ class AuthorDao {
     if (!correct) {
       throw new AuthFailed('密码不正确')
     }
+    
     return author
   }
 }
