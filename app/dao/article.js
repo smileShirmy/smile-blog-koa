@@ -34,6 +34,7 @@ class ArticleDao {
         title: v.get('body.title'),
         content: v.get('body.content'),
         cover: v.get('body.cover'),
+        created_date: v.get('body.createdDate'),
         category_id: categoryId
       }, { transaction: t })
       const articleId = result.getDataValue('id')
@@ -43,7 +44,7 @@ class ArticleDao {
   }
 
   async getArticle(id) {
-    const article = await Article.findOne({
+    const article = await Article.scope('bh').findOne({
       where: {
         id
       }

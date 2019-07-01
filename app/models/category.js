@@ -2,7 +2,15 @@ const { sequelize } = require('../../core/db')
 const { Sequelize, Model } = require('sequelize')
 
 class Category extends Model {
-
+  toJSON() {
+    let origin = {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      cover: this.cover
+    }
+    return origin
+  }
 }
 
 Category.init({

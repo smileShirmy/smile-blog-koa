@@ -4,7 +4,17 @@ const bcrypt = require('bcryptjs')
 const { AuthType } = require('../lib/enums')
 
 class Author extends Model {
-
+  toJSON() {
+    let origin = {
+      id: this.id,
+      name: this.name,
+      avatar: this.avatar,
+      email: this.email,
+      description: this.description,
+      auth: this.auth
+    }
+    return origin
+  }
 }
 
 Author.init({

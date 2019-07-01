@@ -22,6 +22,10 @@ Article.init({
   category_id: {
     type: Sequelize.INTEGER,
     allowNull: false
+  },
+  created_date: {
+    type: Sequelize.DATE,
+    allowNull: false
   }
 }, {
   sequelize,
