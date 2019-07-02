@@ -20,8 +20,7 @@ class Author extends Model {
 Author.init({
   name: {
     type: Sequelize.STRING(32),
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   avatar: {
     type: Sequelize.STRING(255),

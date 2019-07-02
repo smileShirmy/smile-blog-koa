@@ -8,8 +8,7 @@ class Article extends Model {
 Article.init({
   title: {
     type: Sequelize.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   content: {
     type: Sequelize.TEXT,
