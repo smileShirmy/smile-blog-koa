@@ -41,6 +41,13 @@ class AuthorDao {
     
     return author
   }
+
+  async getAuthors() {
+    const authors = await Author.findAll({
+      attributes: { exclude: ['auth'] }
+    })
+    return authors
+  }
 }
 
 module.exports = {

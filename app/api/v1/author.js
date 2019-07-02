@@ -41,6 +41,11 @@ authorApi.post('/login', async (ctx) => {
   }
 })
 
+authorApi.get('/authors', async (ctx) => {
+  const authors = await AuthorDto.getAuthors()
+  ctx.body = authors
+})
+
 authorApi.post('/verify', async (ctx) => {
   const v = await new NotEmptyValidator().validate(ctx)
   const result = Auth.verifyToken(v.get('body.token'))
