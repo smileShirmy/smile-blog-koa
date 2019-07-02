@@ -25,6 +25,20 @@ class AuthorDao {
     })
   }
 
+  async updateAuthor(v, id) {
+    const author = await Category.findByPk(id)
+    if (!author) {
+      throw new NotFound({
+        msg: '没有找到相关作者'
+      })
+    }
+    author.avatar = v.get('body.avatar')
+    author.email = v.get('body.email')
+    author.description = v.get('body.description')
+    author.auth = v.get('body.auth')
+    author.save()
+  }
+
   async verifyEmailPassword(ctx, name, password) {
     const author = await Author.findOne({
       where: {

@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 
 const { success } = require('../../lib/helper')
-const { CreateAuthorValidator, LoginValidator } = require('@validator/author')
+const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middleware/auth')
@@ -22,6 +22,13 @@ authorApi.post('/', async (ctx) => {
 
   await AuthorDto.createAuthor(v)
   success('创建用户成功')
+})
+
+authorApi.put('/info', new Auth().m, async (ctx) => {
+  const v = await new UpdateAuthorValidator().validate(ctx)
+
+  await AuthorDto.updateAuthor(v, ctx.currentAuthor.id)
+  success('更新用户成功')
 })
 
 authorApi.post('/login', async (ctx) => {
