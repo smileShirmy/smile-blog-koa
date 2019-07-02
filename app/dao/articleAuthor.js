@@ -6,7 +6,7 @@ const { Article } = require('@models/article')
 
 class ArticleAuthorDao {
   async createArticleAuthor(articleId, authors, t) {
-    const arr = JSON.parse(authors)
+    const arr = typeof authors === 'string' ? JSON.parse(authors) : authors
     for (let i = 0; i < arr.length; i++) {
       await ArticleAuthor.create({
         article_id: articleId,

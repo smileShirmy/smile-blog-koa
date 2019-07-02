@@ -35,7 +35,9 @@ function checkTags(val) {
     throw new Error('tags是必须参数')
   }
   try {
-    tags = JSON.parse(tags)
+    if (typeof tags === 'string') {
+      tags = JSON.parse(tags)
+    }
   } catch (error) {
     throw new Error('tags参数不合法')
   }
@@ -50,7 +52,9 @@ function checkAuthors(val) {
     throw new Error('authors是必须参数')
   }
   try {
-    authors = JSON.parse(authors)
+    if (typeof tags === 'string') {
+      authors = JSON.parse(authors)
+    }
   } catch (error) {
     throw new Error('authors参数不合法')
   }

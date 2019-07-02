@@ -20,9 +20,7 @@ articleApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateArticleValidator().validate(ctx)
   const categoryId = v.get('body.categoryId')
   await ArticleDto.createArticle(v, categoryId)
-  success({
-    msg: '新建文章成功'
-  })
+  success('新建文章成功')
 })
 
 articleApi.get('/', async (ctx) => {
@@ -47,9 +45,7 @@ articleApi.post('/add/comment', async (ctx) => {
   })
   const articleId = v.get('body.articleId')
   await CommentDto.createComment(v, articleId)
-  success({
-    msg: '添加评论成功'
-  })
+  success('添加评论成功')
 })
 
 articleApi.get('/get/comment', async (ctx) => {
@@ -67,18 +63,14 @@ articleApi.delete('/del/comment', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await CommentDto.deleteComment(id)
-  success({
-    msg: '删除评论成功'
-  })
+  success('删除评论成功')
 })
 
 articleApi.put('/like/comment', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await CommentDto.likeComment(id)
-  success({
-    msg: '点赞评论成功'
-  })
+  success('点赞评论成功')
 })
 
 articleApi.post('/reply/comment', async (ctx) => {
@@ -88,9 +80,7 @@ articleApi.post('/reply/comment', async (ctx) => {
   const articleId = v.get('body.articleId')
   const parentId = v.get('body.parentId')
   await CommentDto.replyComment(v, articleId, parentId)
-  success({
-    msg: '回复成功'
-  })
+  success('回复成功')
 })
 
 module.exports = articleApi

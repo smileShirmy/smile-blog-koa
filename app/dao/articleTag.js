@@ -5,7 +5,7 @@ const { ArticleTag } = require('@models/articleTag')
 
 class ArticleTagDao {
   async createArticleTag(articleId, tags, t) {
-    const arr = JSON.parse(tags)
+    const arr = typeof tags === 'string' ? JSON.parse(tags) : tags
     for (let i = 0; i < arr.length; i++) {
       await ArticleTag.create({
         article_id: articleId,

@@ -32,27 +32,21 @@ tagApi.get('/', async (ctx) => {
 tagApi.post('/', async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
   await TagDto.createTag(v)
-  success({
-    msg: '新建标签成功'
-  })
+  success('新建标签成功')
 })
 
 tagApi.put('/', async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
   const id = getSafeParamId(v)
   await TagDto.updateTag(v, id)
-  success({
-    msg: '更新标签成功'
-  })
+  success('更新标签成功')
 })
 
 tagApi.delete('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await TagDto.deleteTag(id)
-  success({
-    msg: '删除标签成功'
-  })
+  success('删除标签成功')
 })
 
 module.exports = tagApi

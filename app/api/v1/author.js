@@ -21,9 +21,7 @@ authorApi.post('/', async (ctx) => {
   const v = await new CreateAuthorValidator().validate(ctx)
 
   await AuthorDto.createAuthor(v)
-  success({
-    msg: '创建用户成功'
-  })
+  success('创建用户成功')
 })
 
 authorApi.post('/login', async (ctx) => {

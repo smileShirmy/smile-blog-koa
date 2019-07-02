@@ -15,9 +15,7 @@ const messageApi = new Router({
 messageApi.post('/', async (ctx) => {
   const v = await new CreateMessageValidator().validate(ctx)
   await MessageDto.createMessage(v)
-  success({
-    msg: '新建留言成功'
-  })
+  success('新建留言成功')
 })
 
 messageApi.get('/messages', async (ctx) => {
@@ -33,9 +31,7 @@ messageApi.delete('/', async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await MessageDto.deleteMessage(id)
-  success({
-    msg: '删除留言成功'
-  })
+  success('删除留言成功')
 })
 
 module.exports = messageApi
