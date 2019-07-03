@@ -1,11 +1,12 @@
 const Router = require('koa-router')
 
 const { success } = require('../../lib/helper')
-const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator } = require('@validator/author')
+const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator, PasswordValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middleware/auth')
 const { AuthType } = require('../../lib/enums')
+const { getSafeParamId } = require('../../lib/util')
 
 const { AuthorDao } = require('@dao/author')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
@@ -24,11 +25,20 @@ authorApi.post('/', async (ctx) => {
   success('创建用户成功')
 })
 
-authorApi.put('/info', new Auth().m, async (ctx) => {
+authorApi.put('/info', async (ctx) => {
   const v = await new UpdateAuthorValidator().validate(ctx)
+  const id = getSafeParamId(v)
 
-  await AuthorDto.updateAuthor(v, ctx.currentAuthor.id)
+  await AuthorDto.updateAuthor(v, id)
   success('更新用户成功')
+})
+
+authorApi.put('/password', async (ctx) => {
+  const v = await new PasswordValidator().validate(ctx)
+  const id = getSafeParamId(v)
+
+  await AuthorDto.changePassword(v, id)
+  success('修改密码成功')
 })
 
 authorApi.post('/login', async (ctx) => {

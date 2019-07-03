@@ -26,7 +26,7 @@ class AuthorDao {
   }
 
   async updateAuthor(v, id) {
-    const author = await Category.findByPk(id)
+    const author = await Author.findByPk(id)
     if (!author) {
       throw new NotFound({
         msg: '没有找到相关作者'
@@ -36,6 +36,17 @@ class AuthorDao {
     author.email = v.get('body.email')
     author.description = v.get('body.description')
     author.auth = v.get('body.auth')
+    author.save()
+  }
+
+  async changePassword(v, id) {
+    const author = await Author.findByPk(id)
+    if (!author) {
+      throw new NotFound({
+        msg: '没有找到相关作者'
+      })
+    }
+    author.password = v.get('body.password')
     author.save()
   }
 
