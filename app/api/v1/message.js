@@ -3,6 +3,7 @@ const Router = require('koa-router')
 const { PositiveIntegerValidator, PaginateValidator } = require('@validator/common')
 const { CreateMessageValidator } = require('@validator/message')
 const { success } = require('../../lib/helper')
+const { Auth } = require('../../../middleware/auth')
 
 const { MessageDao } = require('@dao/message')
 
@@ -27,7 +28,8 @@ messageApi.get('/messages', async (ctx) => {
   }
 })
 
-messageApi.delete('/', async (ctx) => {
+// 删除留言，需要最高权限才能删除留言
+messageApi.delete('/', new Auth(32).m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await MessageDto.deleteMessage(id)

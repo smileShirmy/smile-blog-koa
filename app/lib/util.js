@@ -1,4 +1,4 @@
-const { toSafeInteger, get, isInteger } = require('lodash')
+const { toSafeInteger, isInteger } = require('lodash')
 const { ParametersException } = require('@exception')
 
 function getSafeParamId(ctx) {

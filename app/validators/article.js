@@ -73,6 +73,44 @@ function checkAuthors(val) {
   }
 }
 
+class GetArticlesValidator extends LinValidator {
+  constructor() {
+    super()
+    this.categoryId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+    this.authorId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+    this.tagId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+    this.publicId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+    this.statusId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+    this.query = [
+      new Rule('isOptional'),
+      new Rule('isLength', '关键词必须在1~10个字符之间', {
+        min: 1,
+        max: 10
+      })
+    ]
+  }
+}
+
 class CreateCommentValidator extends PositiveIntegerValidator {
   constructor() {
     super()
@@ -115,5 +153,6 @@ class ReplyCommentValidator extends CreateCommentValidator {
 module.exports = {
   CreateOrUpdateArticleValidator,
   CreateCommentValidator,
-  ReplyCommentValidator
+  ReplyCommentValidator,
+  GetArticlesValidator
 }

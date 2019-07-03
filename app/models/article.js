@@ -33,6 +33,16 @@ Article.init({
   status: {
     type: Sequelize.INTEGER,
     allowNull: false
+  },
+  like: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  views: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
   }
 }, {
   sequelize,

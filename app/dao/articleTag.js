@@ -15,15 +15,12 @@ class ArticleTagDao {
   }
 
   async getArticleTag(articleId) {
-    const tagIds = await ArticleTag.findAll({
+    const result = await ArticleTag.findAll({
       where: {
         article_id: articleId
       }
     })
-    let ids = []
-    tagIds.forEach(tag => {
-      ids.push(tag.tag_id)
-    })
+    let ids = result.map(v => v.tag_id)
     return await Tag.findAll({
       where: {
         id: {
@@ -31,6 +28,15 @@ class ArticleTagDao {
         }
       }
     })
+  }
+
+  async getArticleIds(tagId) {
+    const ids = await ArticleTag.findAll({
+      where: {
+        tag_id: tagId
+      }
+    })
+    return ids.map(v => v.article_id)
   }
 }
 

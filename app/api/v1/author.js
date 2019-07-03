@@ -72,8 +72,8 @@ authorApi.post('/login', async (ctx) => {
 
   const author = await AuthorDto.verifyEmailPassword(ctx, name, password)
 
-  const accessToken = generateToken(author.id, AuthType.USER, { expiresIn: global.config.security.accessExp })
-  const refreshToken = generateToken(author.id, AuthType.USER, { expiresIn: global.config.security.refreshExp })
+  const accessToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.accessExp })
+  const refreshToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.refreshExp })
   ctx.body = {
     accessToken,
     refreshToken

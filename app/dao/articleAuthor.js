@@ -15,17 +15,26 @@ class ArticleAuthorDao {
     }
   }
 
-  async getArticleAuthor(articleId) {
-    const authorIds = await ArticleAuthor.findAll({
+  async getArticleAuthor(articleId, options = {}) {
+    const result = await ArticleAuthor.findAll({
       where: {
         article_id: articleId
       }
     })
-    let ids = []
-    authorIds.forEach(author => {
-      ids.push(author.id)
-    })
+    let ids = result.map(v => v.author_id)
     return await Author.findAll({
+      where: {
+        id: {
+          [Op.in]: ids
+        }
+      },
+      ...options
+    })
+  }
+
+  async getAuthorArticles(authorId) {
+    const ids = this.getArticleIds(authorId)
+    return await Article.findAll({
       where: {
         id: {
           [Op.in]: ids
@@ -34,23 +43,13 @@ class ArticleAuthorDao {
     })
   }
 
-  async getAuthorArticles(authorId) {
-    const articleIds = await ArticleAuthor.findAll({
+  async getArticleIds(authorId) {
+    const ids = await ArticleAuthor.findAll({
       where: {
         author_id: authorId
       }
     })
-    let ids = []
-    articleIds.forEach(article => {
-      ids.push(article.article_id)
-    })
-    return await Article.findAll({
-      where: {
-        id: {
-          [Op.in]: ids
-        }
-      }
-    })
+    return ids.map(v => v.article_id)
   }
 }
 

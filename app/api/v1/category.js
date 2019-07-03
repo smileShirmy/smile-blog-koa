@@ -4,6 +4,7 @@ const { CreateOrUpdateCategoryValidator } = require('@validator/category')
 const { PositiveIntegerValidator } = require('@validator/common')
 const { success } = require('../../lib/helper')
 const { getSafeParamId } = require('../../lib/util')
+const { Auth } = require('../../../middleware/auth')
 
 const { CategoryDao } = require('@dao/category')
 
@@ -31,7 +32,8 @@ categoryApi.put('/', async (ctx) => {
   success('更新分类成功')
 })
 
-categoryApi.delete('/', async (ctx) => {
+// 删除分类 需要最高权限才能删除分诶
+categoryApi.delete('/', new Auth(32).m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await CategoryDto.deleteCategory(id)

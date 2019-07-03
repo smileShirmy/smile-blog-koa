@@ -1,5 +1,6 @@
 const { NotFound, Forbidden } = require('@exception')
 const { Category } = require('@models/category')
+const { Article } = require('@models/article')
 
 class CategoryDao {
   async createCategory(v) {
@@ -20,11 +21,12 @@ class CategoryDao {
     })
   }
 
-  async getCategory(id) {
+  async getCategory(id, options = {}) {
     const category = await Category.findOne({
       where: {
         id
-      }
+      },
+      ...options
     })
     return category
   }
@@ -55,6 +57,16 @@ class CategoryDao {
     if (!category) {
       throw new NotFound({
         msg: '没有找到相关分类'
+      })
+    }
+    const article = await Article.findOne({
+      where: {
+        category_id: id
+      }
+    })
+    if (article) {
+      throw new Forbidden({
+        msg: '该分类下有文章，禁止删除'
       })
     }
     category.destroy()

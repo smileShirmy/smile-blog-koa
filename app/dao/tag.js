@@ -1,5 +1,6 @@
 const { NotFound, Forbidden } = require('@exception')
 const { Tag } = require('@models/tag')
+const { ArticleTag } = require('@models/articleTag')
 
 class TagDao {
   async createTag(v) {
@@ -52,6 +53,16 @@ class TagDao {
     if (!tag) {
       throw new NotFound({
         msg: '没有找到相关标签'
+      })
+    }
+    const result = await ArticleTag.findOne({
+      where: {
+        tag_id: id
+      }
+    })
+    if (result) {
+      throw new Forbidden({
+        msg: '该标签下有文章，禁止删除'
       })
     }
     tag.destroy()

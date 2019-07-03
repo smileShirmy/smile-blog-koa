@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 
 const { Author } = require('@models/author')
+const { ArticleAuthor } = require('@models/articleAuthor')
 const { AuthFailed, Forbidden } = require('@exception')
 const { AuthType } = require('../lib/enums')
 const bcrypt = require('bcryptjs')
@@ -51,6 +52,16 @@ class AuthorDao {
     if (!author) {
       throw new NotFound({
         msg: '没有找到相关作者'
+      })
+    }
+    const result = await ArticleAuthor.findOne({
+      where: {
+        author_id: id
+      }
+    })
+    if (result) {
+      throw new Forbidden({
+        msg: '该作者下有文章，禁止删除'
       })
     }
     author.destroy()

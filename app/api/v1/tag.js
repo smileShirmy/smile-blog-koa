@@ -1,10 +1,13 @@
 const Router = require('koa-router')
-const { TagDao } = require('@dao/tag')
+
 const { success } = require('../../lib/helper')
 const { CreateOrUpdateTagValidator } = require('@validator/tag')
 const { getSafeParamId } = require('../../lib/util')
 const { NotFound } = require('@exception')
 const { PositiveIntegerValidator } = require('@validator/common')
+const { Auth } = require('../../../middleware/auth')
+
+const { TagDao } = require('@dao/tag')
 
 const tagApi = new Router({
   prefix: '/v1/tag'
@@ -42,7 +45,8 @@ tagApi.put('/', async (ctx) => {
   success('更新标签成功')
 })
 
-tagApi.delete('/', async (ctx) => {
+// 删除标签，需要最高权限才能删除留言
+tagApi.delete('/', new Auth(32).m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = v.get('query.id')
   await TagDto.deleteTag(id)
