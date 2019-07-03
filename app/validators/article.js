@@ -25,6 +25,16 @@ class CreateOrUpdateArticleValidator extends LinValidator {
       new Rule('isInt', '分类ID需要是正整数', {
         min: 1
       })
+    ],
+    this.status = [
+      new Rule('isInt', '文章状态需要为正整数', {
+        min: 1
+      })
+    ],
+    this.public = [
+      new Rule('isInt', '文章公开需要为正整数', {
+        min: 1
+      })
     ]
   }
 }

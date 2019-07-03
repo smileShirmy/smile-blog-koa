@@ -25,6 +25,14 @@ Article.init({
   created_date: {
     type: Sequelize.DATE,
     allowNull: false
+  },
+  public: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
+  status: {
+    type: Sequelize.INTEGER,
+    allowNull: false
   }
 }, {
   sequelize,

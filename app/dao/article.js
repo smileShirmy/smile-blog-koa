@@ -35,7 +35,9 @@ class ArticleDao {
         content: v.get('body.content'),
         cover: v.get('body.cover'),
         created_date: v.get('body.createdDate'),
-        category_id: categoryId
+        category_id: categoryId,
+        public: v.get('body.public'),
+        status: v.get('body.status')
       }, { transaction: t })
       const articleId = result.getDataValue('id')
       await ArticleTagDto.createArticleTag(articleId, v.get('body.tags'), t)
