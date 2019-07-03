@@ -80,6 +80,13 @@ authorApi.post('/login', async (ctx) => {
   }
 })
 
+// 获取除了管理员之外的全部作者
+authorApi.get('/authors/admin', new Auth().m, async (ctx) => {
+  const authors = await AuthorDto.getAdminAuthors()
+  ctx.body = authors
+})
+
+// 获取全部作者
 authorApi.get('/authors', async (ctx) => {
   const authors = await AuthorDto.getAuthors()
   ctx.body = authors

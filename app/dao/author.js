@@ -1,5 +1,8 @@
+const { Op } = require('sequelize')
+
 const { Author } = require('@models/author')
 const { AuthFailed, Forbidden } = require('@exception')
+const { AuthType } = require('../lib/enums')
 const bcrypt = require('bcryptjs')
 
 class AuthorDao {
@@ -98,6 +101,18 @@ class AuthorDao {
 
   async getAuthors() {
     const authors = await Author.findAll({
+      attributes: { exclude: ['auth'] }
+    })
+    return authors
+  }
+
+  async getAdminAuthors() {
+    const authors = await Author.findAll({
+      where: {
+        auth: {
+          [Op.ne]: AuthType.SUPER_ADMIN
+        }
+      },
       attributes: { exclude: ['auth'] }
     })
     return authors
