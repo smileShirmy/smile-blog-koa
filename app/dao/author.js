@@ -50,6 +50,21 @@ class AuthorDao {
     author.save()
   }
 
+  async changeSelfPassword(v, id) {
+    const author = await Author.findByPk(id)
+    if (!author) {
+      throw new NotFound({
+        msg: '没有找到相关作者'
+      })
+    }
+    const correct = bcrypt.compareSync(v.get('body.oldPassword'), author.password)
+    if (!correct) {
+      throw new AuthFailed('原始密码不正确')
+    }
+    author.password = v.get('body.password')
+    author.save()
+  }
+
   async verifyEmailPassword(ctx, name, password) {
     const author = await Author.findOne({
       where: {

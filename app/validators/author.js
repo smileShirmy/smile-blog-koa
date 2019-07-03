@@ -63,6 +63,19 @@ class PasswordValidator extends LinValidator {
   }
 }
 
+class SelfPasswordValidator extends PasswordValidator {
+  constructor() {
+    super()
+    this.oldPassword = [
+      new Rule('isLength', '密码长度为6~32个字符', {
+        min: 6,
+        max: 32
+      }),
+      new Rule('matches', '密码不符合规范', '^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]')
+    ]
+  }
+}
+
 class LoginValidator extends LinValidator {
   constructor() {
     super()
@@ -72,6 +85,7 @@ class LoginValidator extends LinValidator {
 }
 
 module.exports = {
+  SelfPasswordValidator,
   CreateAuthorValidator,
   LoginValidator,
   UpdateAuthorValidator,
