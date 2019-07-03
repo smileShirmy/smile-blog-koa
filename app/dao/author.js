@@ -39,6 +39,20 @@ class AuthorDao {
     author.save()
   }
 
+  async deleteAuthor(id) {
+    const author = await Author.findOne({
+      where: {
+        id
+      }
+    })
+    if (!author) {
+      throw new NotFound({
+        msg: '没有找到相关作者'
+      })
+    }
+    author.destroy()
+  }
+
   async changePassword(v, id) {
     const author = await Author.findByPk(id)
     if (!author) {

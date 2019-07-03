@@ -7,6 +7,7 @@ const { generateToken } = require('../../../core/util')
 const { Auth } = require('../../../middleware/auth')
 const { AuthType } = require('../../lib/enums')
 const { getSafeParamId } = require('../../lib/util')
+const { Forbidden } = require('@exception')
 
 const { AuthorDao } = require('@dao/author')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
@@ -47,6 +48,21 @@ authorApi.put('/password/self', new Auth().m, async (ctx) => {
 
   await AuthorDto.changeSelfPassword(v, id)
   success('修改密码成功')
+})
+
+// 需要最高权限 32 才能删除
+authorApi.delete('/', new Auth(32).m, async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const id = getSafeParamId(v)
+  
+  const authorId = ctx.currentAuthor.id
+  if (id === authorId) {
+    throw new Forbidden({
+      msg: '不能删除自己'
+    })
+  }
+  await AuthorDto.deleteAuthor(id)
+  success('删除作者成功')
 })
 
 authorApi.post('/login', async (ctx) => {
