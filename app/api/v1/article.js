@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 
 const { PositiveIntegerValidator } = require('@validator/common')
-const { CreateOrUpdateArticleValidator, CreateCommentValidator, ReplyCommentValidator, GetArticlesValidator } = require('@validator/article')
+const { CreateOrUpdateArticleValidator, CreateCommentValidator, ReplyCommentValidator, GetArticlesValidator, SetPublicValidator } = require('@validator/article')
 const { success } = require('../../lib/helper')
 const { Auth } = require('../../../middleware/auth')
 
@@ -61,6 +61,15 @@ articleApi.delete('/', new Auth(32).m, async (ctx) => {
   const id = v.get('query.id')
   await ArticleDto.deleteArticle(id)
   success('删除文章成功')
+})
+
+articleApi.put('/public', async (ctx) => {
+  const v = await new SetPublicValidator().validate(ctx)
+  const id = v.get('query.id')
+  const publicId = v.get('body.publicId')
+
+  await ArticleDto.updateArticlePublic(id, publicId)
+  success(`设为${publicId === 1 ? '公开' : '私密'}成功`)
 })
 
 // 添加评论

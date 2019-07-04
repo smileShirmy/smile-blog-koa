@@ -111,6 +111,17 @@ class GetArticlesValidator extends LinValidator {
   }
 }
 
+class SetPublicValidator extends PositiveIntegerValidator {
+  constructor() {
+    super()
+    this.publicId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+  }
+}
+
 class CreateCommentValidator extends PositiveIntegerValidator {
   constructor() {
     super()
@@ -154,5 +165,6 @@ module.exports = {
   CreateOrUpdateArticleValidator,
   CreateCommentValidator,
   ReplyCommentValidator,
-  GetArticlesValidator
+  GetArticlesValidator,
+  SetPublicValidator
 }

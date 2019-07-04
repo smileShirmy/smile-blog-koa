@@ -78,6 +78,18 @@ class ArticleDao {
     await article.increment('like', { by: 1 })
   }
 
+  // 把文章设为私密或公开
+  async updateArticlePublic(id, publicId) {
+    const article = await Article.findByPk(id)
+    if (!article) {
+      throw new NotFound({
+        msg: '没有找到相关文章'
+      })
+    }
+    article.public = publicId
+    article.save()
+  }
+
   // 获取所有文章
   async getArticles(v) {
     const categoryId = v.get('query.categoryId')

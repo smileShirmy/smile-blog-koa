@@ -40,7 +40,7 @@ class CategoryDao {
     const category = await Category.findByPk(id)
     if (!category) {
       throw new NotFound({
-        msg: '没找到相关分类'
+        msg: '没有找到相关分类'
       })
     }
     category.name = v.get('body.name')
