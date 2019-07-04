@@ -1,6 +1,7 @@
 const { NotFound } = require('@exception')
 const { Comment } = require('@models/comment')
 const { ArticleDao } = require('@dao/article')
+const { Article } = require('@models/article')
 
 const ArticleDto = new ArticleDao()
 
@@ -22,10 +23,14 @@ class CommentDao {
   }
 
   async getComments(articleId) {
-    const comments = await Comment.findAll({
+    let comments = await Comment.findAll({
       where: {
         article_id: articleId
-      }
+      },
+      attributes: { exclude: ['email', 'article_id'] }
+    })
+    comments.forEach(v => {
+      v.setDataValue('createdDate', v.created_at)
     })
     return comments
   }
@@ -55,7 +60,7 @@ class CommentDao {
   }
 
   async replyComment(v, articleId, parentId) {
-    const article = await ArticleDto.findByPk(articleId)
+    const article = await Article.findByPk(articleId)
     if (!article) {
       throw new NotFound({
         msg: '没有找到相关文章'

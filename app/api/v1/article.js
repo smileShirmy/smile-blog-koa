@@ -89,9 +89,7 @@ articleApi.get('/get/comment', async (ctx) => {
   })
   const articleId = v.get('query.articleId')
   const comments = await CommentDto.getComments(articleId)
-  ctx.body = {
-    comments
-  }
+  ctx.body = comments
 })
 
 // 删除某条评论 需要最高权限
