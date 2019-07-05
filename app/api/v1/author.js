@@ -3,10 +3,10 @@ const Router = require('koa-router')
 const { success } = require('../../lib/helper')
 const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator, PasswordValidator, SelfPasswordValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
-const { generateToken } = require('../../../core/util')
-const { Auth, RefreshAuth } = require('../../../middleware/auth')
+const { Auth, RefreshAuth, generateToken } = require('../../../middleware/auth')
 const { getSafeParamId } = require('../../lib/util')
 const { Forbidden } = require('@exception')
+const { TokenType } = require('../../lib/enums')
 
 const { AuthorDao } = require('@dao/author')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
@@ -71,8 +71,8 @@ authorApi.post('/login', async (ctx) => {
 
   const author = await AuthorDto.verifyEmailPassword(ctx, name, password)
 
-  const accessToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.accessExp })
-  const refreshToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.refreshExp })
+  const accessToken = generateToken(author.id, author.auth, TokenType.ACCESS, { expiresIn: global.config.security.accessExp })
+  const refreshToken = generateToken(author.id, author.auth, TokenType.REFRESH, { expiresIn: global.config.security.refreshExp })
   ctx.body = {
     accessToken,
     refreshToken
@@ -85,8 +85,8 @@ authorApi.post('/login', async (ctx) => {
 authorApi.get('/refresh', new RefreshAuth().m, async (ctx) => {
   const author = ctx.currentAuthor
   
-  const accessToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.accessExp })
-  const refreshToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.refreshExp })
+  const accessToken = generateToken(author.id, author.auth, TokenType.ACCESS, { expiresIn: global.config.security.accessExp })
+  const refreshToken = generateToken(author.id, author.auth, TokenType.REFRESH, { expiresIn: global.config.security.refreshExp })
 
   ctx.body = {
     accessToken,
@@ -104,14 +104,6 @@ authorApi.get('/authors/admin', new Auth().m, async (ctx) => {
 authorApi.get('/authors', async (ctx) => {
   const authors = await AuthorDto.getAuthors()
   ctx.body = authors
-})
-
-authorApi.post('/verify', async (ctx) => {
-  const v = await new NotEmptyValidator().validate(ctx)
-  const result = Auth.verifyToken(v.get('body.token'))
-  ctx.body = {
-    isValid: result,
-  }
 })
 
 authorApi.get('/articles', async (ctx) => {
