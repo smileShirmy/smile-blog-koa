@@ -73,7 +73,7 @@ class ExpiredToken extends HttpException {
 class RefreshException extends HttpException {
   constructor(msg, errorCode) {
     super()
-    this.msg = msg || '令牌失效'
+    this.msg = msg || 'refresh token 获取失败'
     this.errorCode = errorCode || 10100
     this.code = 401
   }

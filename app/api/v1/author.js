@@ -4,8 +4,7 @@ const { success } = require('../../lib/helper')
 const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator, PasswordValidator, SelfPasswordValidator } = require('@validator/author')
 const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
 const { generateToken } = require('../../../core/util')
-const { Auth } = require('../../../middleware/auth')
-const { AuthType } = require('../../lib/enums')
+const { Auth, RefreshAuth } = require('../../../middleware/auth')
 const { getSafeParamId } = require('../../lib/util')
 const { Forbidden } = require('@exception')
 
@@ -20,7 +19,7 @@ const authorApi = new Router({
 })
 
 authorApi.post('/', async (ctx) => {
-  const v = await new CreateAuthorValidator().validate(ctx)
+  const v = await new CreateAuthorValidator().validateclear(ctx)
 
   await AuthorDto.createAuthor(v)
   success('创建用户成功')
@@ -83,7 +82,7 @@ authorApi.post('/login', async (ctx) => {
 /**
  * 守卫函数，用户刷新令牌，统一异常
  */
-authorApi.get('v1/author/refresh', new Auth().m, async (ctx) => {
+authorApi.get('/refresh', new RefreshAuth().m, async (ctx) => {
   const author = ctx.currentAuthor
   
   const accessToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.accessExp })

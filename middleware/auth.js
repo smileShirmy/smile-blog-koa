@@ -10,6 +10,9 @@ class Auth {
 
   get m() {
     return async (ctx, next) => {
+      if (ctx.request.method === 'OPTIONS') {
+        await next()
+      }
       if (!ctx.header || !ctx.header.authorization) {
         throw new AuthFailed({ msg: '认证失败，请检查请求令牌是否正确' })
       }
@@ -65,6 +68,21 @@ class Auth {
   }
 }
 
+class RefreshAuth {
+  constructor(level) {
+    this.level = level || 1
+  }
+
+  get m() {
+    try {
+      return new Auth(this.level).m
+    } catch (e) {
+      throw new RefreshException()
+    }
+  }
+}
+
 module.exports = {
-  Auth
+  Auth,
+  RefreshAuth
 }
