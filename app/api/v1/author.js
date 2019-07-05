@@ -80,6 +80,21 @@ authorApi.post('/login', async (ctx) => {
   }
 })
 
+/**
+ * 守卫函数，用户刷新令牌，统一异常
+ */
+authorApi.get('v1/author/refresh', new Auth().m, async (ctx) => {
+  const author = ctx.currentAuthor
+  
+  const accessToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.accessExp })
+  const refreshToken = generateToken(author.id, author.auth, { expiresIn: global.config.security.refreshExp })
+
+  ctx.body = {
+    accessToken,
+    refreshToken
+  }
+})
+
 // 获取除了管理员之外的全部作者
 authorApi.get('/authors/admin', new Auth().m, async (ctx) => {
   const authors = await AuthorDto.getAdminAuthors()

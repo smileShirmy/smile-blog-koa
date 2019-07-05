@@ -14,6 +14,11 @@ const AuthType = {
   isThisType
 }
 
+const TokenType = {
+  ACCESS: 'access',
+  REFRESH: 'refresh'
+}
 module.exports = {
-  AuthType
+  AuthType,
+  TokenType
 }

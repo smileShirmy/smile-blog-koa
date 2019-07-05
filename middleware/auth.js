@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { Author } = require('@models/author')
 
-const { Forbidden, AuthFailed, NotFound } = require('@exception')
+const { Forbidden, AuthFailed, NotFound, InvalidToken, ExpiredToken, RefreshException } = require('@exception')
 
 class Auth {
   constructor(level) {
@@ -25,9 +25,9 @@ class Auth {
             decode = jwt.verify(token, global.config.security.secretKey)
           } catch (error) {
             if (error.name === 'TokenExpiredError') {
-              throw new AuthFailed({ msg: '认证失败，token已过期' })
+              throw new ExpiredToken({ msg: '认证失败，token已过期' })
             } else {
-              throw new AuthFailed({ msg: '认证失败，令牌失效'})
+              throw new InvalidToken({ msg: '认证失败，令牌失效'})
             }
           }
 
