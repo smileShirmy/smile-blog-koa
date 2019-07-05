@@ -32,13 +32,13 @@ tagApi.get('/', async (ctx) => {
   ctx.body = tag
 })
 
-tagApi.post('/', async (ctx) => {
+tagApi.post('/', new Auth().m, async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
   await TagDto.createTag(v)
   success('新建标签成功')
 })
 
-tagApi.put('/', async (ctx) => {
+tagApi.put('/', new Auth().m, async (ctx) => {
   const v = await new CreateOrUpdateTagValidator().validate(ctx)
   const id = getSafeParamId(v)
   await TagDto.updateTag(v, id)

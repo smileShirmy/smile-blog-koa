@@ -4,13 +4,13 @@ const { Tag } = require('@models/tag')
 const { ArticleTag } = require('@models/articleTag')
 
 class ArticleTagDao {
-  async createArticleTag(articleId, tags, t) {
+  async createArticleTag(articleId, tags, options = {}) {
     const arr = typeof tags === 'string' ? JSON.parse(tags) : tags
     for (let i = 0; i < arr.length; i++) {
       await ArticleTag.create({
         article_id: articleId,
         tag_id: arr[i]
-      }, { transaction: t })
+      }, {...options})
     }
   }
 
@@ -31,12 +31,29 @@ class ArticleTagDao {
   }
 
   async getArticleIds(tagId) {
-    const ids = await ArticleTag.findAll({
+    const result = await ArticleTag.findAll({
       where: {
         tag_id: tagId
       }
     })
-    return ids.map(v => v.article_id)
+    return result.map(v => v.article_id)
+  }
+
+  async deleteArticleTag(articleId, tags = []) {
+    const result = await ArticleTag.findAll({
+      where: {
+        article_id: articleId
+      }
+    })
+    // 如果 id 相同则不再需要删除
+    if (tags.length && result.map(v => v.tag_id).join('') === tags.join('')) {
+      return false
+    } else {
+      for (let i = 0; i < result.length; i++) {
+        await result[i].destroy()
+      }
+      return true
+    }
   }
 }
 

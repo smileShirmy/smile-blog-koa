@@ -13,8 +13,11 @@ class MessageDao {
     const pageCount = v.get('query.count');
 
     const { rows, count } = await Message.findAndCountAll({
+      order: [
+        ['id', 'DESC']
+      ],
       offset: start * pageCount,
-      limit: pageCount
+      limit: pageCount,
     })
     return {
       rows,

@@ -19,13 +19,13 @@ categoryApi.get('/categories', async (ctx) => {
   ctx.body = categories
 })
 
-categoryApi.post('/', async (ctx) => {
+categoryApi.post('/', new Auth().m, async (ctx) => {
   const v = await new CreateOrUpdateCategoryValidator().validate(ctx)
   await CategoryDto.createCategory(v)
   success('新建分类成功')
 })
 
-categoryApi.put('/', async (ctx) => {
+categoryApi.put('/', new Auth().m, async (ctx) => {
   const v = await new CreateOrUpdateCategoryValidator().validate(ctx)
   const id = getSafeParamId(v)
   await CategoryDto.updateCategory(v, id)

@@ -14,7 +14,7 @@ const ArticleAuthorDto = new ArticleAuthorDao()
 const CategoryDto = new CategoryDao()
 
 class ArticleDao {
-  async createArticle(v, categoryId) {
+  async createArticle(v) {
     const article = await Article.findOne({
       where: {
         title: v.get('body.title')
@@ -22,9 +22,10 @@ class ArticleDao {
     })
     if (article) {
       throw new Forbidden({
-        msg: '文章已存在'
+        msg: '存在同名文章'
       })
     }
+    const categoryId = v.get('body.categoryId')
     const category = await CategoryDto.getCategory(categoryId)
     if (!category) {
       throw new Forbidden({
@@ -43,9 +44,44 @@ class ArticleDao {
         like: 0
       }, { transaction: t })
       const articleId = result.getDataValue('id')
-      await ArticleTagDto.createArticleTag(articleId, v.get('body.tags'), t)
-      await ArticleAuthorDto.createArticleAuthor(articleId, v.get('body.authors'), t)
+      await ArticleTagDto.createArticleTag(articleId, v.get('body.tags'), { transaction: t })
+      await ArticleAuthorDto.createArticleAuthor(articleId, v.get('body.authors'), { transaction: t })
     })
+  }
+
+  // 编辑某篇文章
+  async updateArticle(v) {
+    const id = v.get('body.id')
+    const article = await Article.findByPk(id)
+    if (!article) {
+      throw new NotFound({
+        msg: '没有找到相关文章'
+      })
+    }
+    const tags = v.get('body.tags')
+    const authors = v.get('body.authors')
+
+    // step1: 先删除相关关联
+    const isDeleteAuthor = await ArticleAuthorDto.deleteArticleAuthor(id, authors)
+    const isDeleteTag = await ArticleTagDto.deleteArticleTag(id, tags)
+
+    // step2: 再创建关联
+    if (isDeleteAuthor) {
+      await ArticleAuthorDto.createArticleAuthor(id, authors)
+    }
+    if (isDeleteTag) {
+      await ArticleTagDto.createArticleTag(id, tags)
+    }
+
+    // step3: 更新文章
+    article.title = v.get('body.title')
+    article.content = v.get('body.content')
+    article.cover = v.get('body.cover')
+    article.created_date = v.get('body.createdDate')
+    article.category_id = v.get('body.categoryId')
+    article.public = v.get('body.public')
+    article.status = v.get('body.status')
+    article.save()
   }
 
   // 获取某篇文章详情
@@ -188,7 +224,22 @@ class ArticleDao {
         msg: '没有找到相关文章'
       })
     }
+
+    // 删除相关关联
+    await ArticleAuthorDto.deleteArticleAuthor(id)
+    await ArticleTagDto.deleteArticleTag(id)
     article.destroy()
+  }
+
+  // 获取谋篇文章内容
+  async getContent(id) {
+    const content = await Article.findOne({
+      where: {
+        id
+      },
+      attributes: ['content']
+    })
+    return content
   }
 }
 

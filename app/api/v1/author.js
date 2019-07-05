@@ -18,14 +18,16 @@ const authorApi = new Router({
   prefix: '/v1/author'
 })
 
-authorApi.post('/', async (ctx) => {
+// 创建用户
+authorApi.post('/', new Auth().m, async (ctx) => {
   const v = await new CreateAuthorValidator().validateclear(ctx)
 
   await AuthorDto.createAuthor(v)
   success('创建用户成功')
 })
 
-authorApi.put('/info', async (ctx) => {
+// 更新用户信息
+authorApi.put('/info', new Auth().m, async (ctx) => {
   const v = await new UpdateAuthorValidator().validate(ctx)
   const id = getSafeParamId(v)
 
@@ -33,7 +35,8 @@ authorApi.put('/info', async (ctx) => {
   success('更新用户成功')
 })
 
-authorApi.put('/password', async (ctx) => {
+// 超级管理员修改作者的密码
+authorApi.put('/password', new Auth(32).m, async (ctx) => {
   const v = await new PasswordValidator().validate(ctx)
   const id = getSafeParamId(v)
 
@@ -41,7 +44,8 @@ authorApi.put('/password', async (ctx) => {
   success('修改作者密码成功')
 })
 
-authorApi.put('/password/self', new Auth().m, async (ctx) => {
+// 修改自己的密码
+authorApi.put('/password/self', new Auth().m, new Auth().m, async (ctx) => {
   const v = await new SelfPasswordValidator().validate(ctx)
   const id = ctx.currentAuthor.id
 
@@ -49,7 +53,7 @@ authorApi.put('/password/self', new Auth().m, async (ctx) => {
   success('修改密码成功')
 })
 
-// 需要最高权限 32 才能删除
+// 删除作者，需要最高权限 32 才能删除
 authorApi.delete('/', new Auth(32).m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const id = getSafeParamId(v)
@@ -64,6 +68,7 @@ authorApi.delete('/', new Auth(32).m, async (ctx) => {
   success('删除作者成功')
 })
 
+// 登录
 authorApi.post('/login', async (ctx) => {
   const v = await new LoginValidator().validate(ctx)
   const name = v.get('body.name')

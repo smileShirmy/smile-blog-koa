@@ -20,11 +20,17 @@ const ArticleDto = new ArticleDao()
 const CommentDto = new CommentDao()
 
 // 创建文章
-articleApi.post('/', async (ctx) => {
+articleApi.post('/', new Auth().m, async (ctx) => {
   const v = await new CreateOrUpdateArticleValidator().validate(ctx)
-  const categoryId = v.get('body.categoryId')
-  await ArticleDto.createArticle(v, categoryId)
+  await ArticleDto.createArticle(v)
   success('新建文章成功')
+})
+
+// 更新某篇文章
+articleApi.put('/', new Auth().m, async (ctx) => {
+  const v = await new CreateOrUpdateArticleValidator().validate(ctx)
+  await ArticleDto.updateArticle(v)
+  success('更新文章成功')
 })
 
 // 获取某篇文章详情
@@ -37,6 +43,14 @@ articleApi.get('/', async (ctx) => {
   article.exclude = ['category_id']
 
   ctx.body = article
+})
+
+// 获取文章内容
+articleApi.get('/content', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const content = await ArticleDto.getContent(v.get('query.id'))
+
+  ctx.body = content
 })
 
 // 点赞某篇文章
@@ -63,7 +77,8 @@ articleApi.delete('/', new Auth(32).m, async (ctx) => {
   success('删除文章成功')
 })
 
-articleApi.put('/public', async (ctx) => {
+// 设置某篇文章为 公开 或 私密
+articleApi.put('/public', new Auth().m, async (ctx) => {
   const v = await new SetPublicValidator().validate(ctx)
   const id = v.get('query.id')
   const publicId = v.get('body.publicId')
