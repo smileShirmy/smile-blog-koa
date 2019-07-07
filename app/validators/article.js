@@ -36,6 +36,11 @@ class CreateOrUpdateArticleValidator extends LinValidator {
         min: 1
       })
     ]
+    this.star = [
+      new Rule('isInt', '文章精选需要为正整数', {
+        min: 1
+      })
+    ]
   }
 }
 
@@ -101,6 +106,11 @@ class GetArticlesValidator extends LinValidator {
         min: 0
       })
     ]
+    this.starId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
     this.query = [
       new Rule('isOptional'),
       new Rule('isLength', '关键词必须在1~10个字符之间', {
@@ -115,6 +125,17 @@ class SetPublicValidator extends PositiveIntegerValidator {
   constructor() {
     super()
     this.publicId = [
+      new Rule('isInt', '需要是整数', {
+        min: 0
+      })
+    ]
+  }
+}
+
+class SetStarValidator extends PositiveIntegerValidator {
+  constructor() {
+    super()
+    this.starId = [
       new Rule('isInt', '需要是整数', {
         min: 0
       })
@@ -152,7 +173,6 @@ class ReplyCommentValidator extends CreateCommentValidator {
   constructor() {
     super()
     this.parentId = [
-      new Rule('isOptional'),
       new Rule('isInt', '需要是正整数', {
         min: 1
       })
@@ -166,5 +186,6 @@ module.exports = {
   CreateCommentValidator,
   ReplyCommentValidator,
   GetArticlesValidator,
-  SetPublicValidator
+  SetPublicValidator,
+  SetStarValidator
 }

@@ -18,6 +18,10 @@ Article.init({
     type: Sequelize.STRING(255),
     allowNull: false
   },
+  description: {
+    type: Sequelize.STRING(255),
+    allowNull: false
+  },
   category_id: {
     type: Sequelize.INTEGER,
     allowNull: false
@@ -35,6 +39,11 @@ Article.init({
     allowNull: false
   },
   like: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  star: {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0

@@ -18,6 +18,8 @@ const TokenType = {
   ACCESS: 'access',
   REFRESH: 'refresh'
 }
+
+
 module.exports = {
   AuthType,
   TokenType

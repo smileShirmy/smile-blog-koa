@@ -29,6 +29,16 @@ class AuthorDao {
     })
   }
 
+  async getAuthorDetail(id) {
+    const author = await Author.findOne({
+      where: {
+        id,
+      },
+      attributes: { exclude: ['auth'] }
+    })
+    return author
+  }
+
   async updateAuthor(v, id) {
     const author = await Author.findByPk(id)
     if (!author) {
@@ -117,6 +127,7 @@ class AuthorDao {
     return authors
   }
 
+  // 获取除了管理员之外的全部作者
   async getAdminAuthors() {
     const authors = await Author.findAll({
       where: {

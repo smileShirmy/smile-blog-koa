@@ -1,13 +1,11 @@
 const { NotFound } = require('@exception')
 const { Comment } = require('@models/comment')
-const { ArticleDao } = require('@dao/article')
 const { Article } = require('@models/article')
-
-const ArticleDto = new ArticleDao()
+const { Sequelize } = require('sequelize')
 
 class CommentDao {
   async createComment(v, articleId) {
-    const article = await ArticleDto.getArticle(articleId)
+    const article = await Article.findByPk(articleId)
     if (!article) {
       throw new NotFound({
         msg: '没有找到相关文章'
@@ -16,8 +14,8 @@ class CommentDao {
     return await Comment.create({
       nickname: v.get('body.nickname'),
       content: v.get('body.content'),
-      email: v.get('v.email'),
-      website: v.get('website'),
+      email: v.get('body.email'),
+      website: v.get('body.website'),
       article_id: articleId
     })
   }
@@ -27,10 +25,13 @@ class CommentDao {
       where: {
         article_id: articleId
       },
+      order: [
+        ['created_at', 'DESC']
+      ],
       attributes: { exclude: ['email', 'article_id'] }
     })
     comments.forEach(v => {
-      v.setDataValue('createdDate', v.created_at)
+      v.setDataValue('created_date', v.created_at)
     })
     return comments
   }
@@ -77,9 +78,20 @@ class CommentDao {
       article_id: articleId,
       nickname: v.get('body.nickname'),
       content: v.get('body.content'),
-      email: v.get('v.email'),
-      website: v.get('website'),
+      email: v.get('body.email'),
+      website: v.get('body.website'),
     })
+  }
+  
+  // 查找某篇文章的评论总数
+  async findCommentCount(articleId) {
+    let comments = await Comment.findAll({
+      where: {
+        article_id: articleId,
+      },
+      attributes: ['id']
+    })
+    return comments.length
   }
 }
 

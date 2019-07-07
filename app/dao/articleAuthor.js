@@ -32,17 +32,6 @@ class ArticleAuthorDao {
     })
   }
 
-  async getAuthorArticles(authorId) {
-    const ids = this.getArticleIds(authorId)
-    return await Article.findAll({
-      where: {
-        id: {
-          [Op.in]: ids
-        }
-      }
-    })
-  }
-
   async getArticleIds(authorId) {
     const result = await ArticleAuthor.findAll({
       where: {

@@ -1,6 +1,6 @@
 const { sequelize } = require('../../core/db')
 const { omitBy, isUndefined, intersection } = require('lodash')
-const { Op } = require('sequelize')
+const { Op } = require('sequelize') 
 
 const { NotFound, Forbidden } = require('@exception')
 
@@ -8,10 +8,12 @@ const { Article } = require('@models/article')
 const { ArticleTagDao } = require('@dao/articleTag')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
 const { CategoryDao } = require('@dao/category')
+const { CommentDao } = require('@dao/comment')
 
 const ArticleTagDto = new ArticleTagDao()
 const ArticleAuthorDto = new ArticleAuthorDao()
 const CategoryDto = new CategoryDao()
+const CommentDto = new CommentDao()
 
 class ArticleDao {
   async createArticle(v) {
@@ -36,11 +38,13 @@ class ArticleDao {
       const result =  await Article.create({
         title: v.get('body.title'),
         content: v.get('body.content'),
+        description: v.get('body.description'),
         cover: v.get('body.cover'),
         created_date: v.get('body.createdDate'),
         category_id: categoryId,
         public: v.get('body.public'),
         status: v.get('body.status'),
+        star: v.get('body.star'),
         like: 0
       }, { transaction: t })
       const articleId = result.getDataValue('id')
@@ -75,33 +79,57 @@ class ArticleDao {
 
     // step3: 更新文章
     article.title = v.get('body.title')
-    article.content = v.get('body.content')
+    article.content = v.get('body.content'),
+    article.description = v.get('body.description'),
     article.cover = v.get('body.cover')
     article.created_date = v.get('body.createdDate')
     article.category_id = v.get('body.categoryId')
     article.public = v.get('body.public')
     article.status = v.get('body.status')
+    article.star = v.get('body.star')
     article.save()
   }
 
-  // 获取某篇文章详情
+  // 获取文章详情
   async getArticle(id) {
-    const article = await Article.findByPk(id)
+    const article = await Article.scope('frontShow').findOne({
+      where: {
+        id
+      },
+      attributes: {
+        exclude: ['public', 'status']
+      }
+    })
     if (!article) {
       throw new NotFound({
         msg: '没有找到相关文章'
       })
     }
+    // 获取这篇文章下的所有标签
     const tags = await ArticleTagDto.getArticleTag(id)
+    // 获取这篇文章下的所有作者
     const authors = await ArticleAuthorDto.getArticleAuthor(id, {
       attributes: { exclude: ['auth', 'description', 'email'] }
     })
-    const category = await CategoryDto.getCategory(article.getDataValue('category_id'))
-    article.setDataValue('category', category)
+    // 获取这篇文章相关分类下的文章列表(除了自己)
+    const categoryArticles = await Article.scope('frontShow').findAll({
+      where: {
+        category_id: article.category_id,
+        id: {
+          [Op.not]: id
+        }
+      },
+      attributes: ['id', 'created_date', 'title']
+    })
+    article.exclude = ['category_id']
 
     await article.increment('views', { by: 1 })
 
-    return { article, tags, authors }
+    article.setDataValue('tags', tags)
+    article.setDataValue('authors', authors)
+    article.setDataValue('categoryArticles', categoryArticles)
+
+    return article
   }
 
   async likeArticle(id) {
@@ -126,13 +154,80 @@ class ArticleDao {
     article.save()
   }
 
-  // 获取所有文章
-  async getArticles(v) {
+  // 把文章设为精选(2)或非精选(1)
+  async updateArticleStar(id, starId) {
+    if (starId === 2) {
+      const articles = await Article.findAll({
+        attributes: ['id']
+      })
+      if (articles.length === 10) {
+        throw new Forbidden({
+          msg: '最多只能设置10篇精选文章'
+        })
+      }
+    }
+    const article = await Article.findByPk(id)
+    if (!article) {
+      throw new NotFound({
+        msg: '没有找到相关文章'
+      })
+    }
+    article.star = starId
+    article.save()
+  }
+
+  // 获取所有精选文章
+  async getStarArticles() {
+    const articles = await Article.scope('frontShow').findAll({
+      where: {
+        star: 2,      // 精选
+      },
+      attributes: {
+        exclude: ['content', 'like', 'public', 'star', 'status', 'views']
+      }
+    })
+    for (let i = 0; i < articles.length; i++) {
+      let article = articles[i]
+      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(articles[i].id, {
+        attributes: { exclude: ['auth', 'description', 'email', 'avatar'] }
+      }))
+      await article.setDataValue('category',  await CategoryDto.getCategory(articles[i].category_id, {
+        attributes: { exclude: ['description', 'cover']}
+      }))
+      article.exclude = ['category_id']
+    }
+    return articles
+  }
+
+  // 获取历史归档
+  async getArchive() {
+    const articles = await Article.scope('frontShow').findAll({
+      order: [
+        ['created_date', 'DESC']
+      ],
+      attributes: ['id', 'title', 'created_date']
+    })
+    for (let i = 0; i < articles.length; i++) {
+      let article = articles[i]
+      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(articles[i].id, {
+        attributes: { exclude: ['auth', 'description', 'email'] }
+      }))
+    }
+    return articles
+  }
+
+  /**
+   * 获取所有文章
+   * @param {Object} v 操作对象
+   * @param {Boolean} isFont 是否展示端
+   */
+  async getArticles(v, isFont = false ) {
     const categoryId = v.get('query.categoryId')
     const authorId = v.get('query.authorId')
     const tagId = v.get('query.tagId')
     const publicId = v.get('query.publicId')
     const statusId = v.get('query.statusId')
+    const starId = v.get('query.starId')
     const search = v.get('query.search')
 
     let ids = []
@@ -163,7 +258,8 @@ class ArticleDao {
     let query = {
       category_id: categoryId === 0 ? undefined : categoryId,
       status: statusId === 0 ? undefined : statusId,
-      public: publicId === 0 ? undefined : publicId
+      public: publicId === 0 ? undefined : publicId,
+      star: starId === 0 ? undefined : starId
     }
 
     // 忽略值为空的key
@@ -188,7 +284,7 @@ class ArticleDao {
       ]
     } : {}
 
-    // 构建查询
+    // 构建查询条件
     const where = {
       ...target,
       ...opIn,
@@ -197,18 +293,25 @@ class ArticleDao {
 
     const articles = await Article.findAll({
       where,
+      order: [
+        ['created_date', 'DESC']
+      ],
       attributes: {
-        exclude: ['content']
+        exclude: isFont ? ['content', 'public', 'status'] : ['content']
       }
     })
     for (let i = 0; i < articles.length; i++) {
-      await articles[i].setDataValue('tags', await ArticleTagDto.getArticleTag(articles[i].id))
-      await articles[i].setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(articles[i].id, {
-        attributes: { exclude: ['auth', 'description', 'email', 'avatar'] }
+      const id = articles[i].id
+      let article = articles[i]
+      await article.setDataValue('tags', await ArticleTagDto.getArticleTag(id))
+      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(id, {
+        attributes: { exclude: ['auth', 'description', 'email'] }
       }))
-      await articles[i].setDataValue('category',  await CategoryDto.getCategory(articles[i].category_id, {
+      await article.setDataValue('category',  await CategoryDto.getCategory(articles[i].category_id, {
         attributes: { exclude: ['description', 'cover']}
       }))
+      await article.setDataValue('comment_count', await CommentDto.findCommentCount(id))
+      article.exclude = ['category_id']
     }
     return articles
   }

@@ -18,15 +18,24 @@ const authorApi = new Router({
   prefix: '/v1/author'
 })
 
-// 创建用户
+// 创建作者
 authorApi.post('/', new Auth().m, async (ctx) => {
-  const v = await new CreateAuthorValidator().validateclear(ctx)
+  const v = await new CreateAuthorValidator().validate(ctx)
 
   await AuthorDto.createAuthor(v)
   success('创建用户成功')
 })
 
-// 更新用户信息
+// 获取作者详情
+authorApi.get('/detail', async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const id = v.get('query.id')
+
+  const author = await AuthorDto.getAuthorDetail(id)
+  ctx.body = author
+})
+
+// 更新作者信息
 authorApi.put('/info', new Auth().m, async (ctx) => {
   const v = await new UpdateAuthorValidator().validate(ctx)
   const id = getSafeParamId(v)
@@ -109,15 +118,6 @@ authorApi.get('/authors/admin', new Auth().m, async (ctx) => {
 authorApi.get('/authors', async (ctx) => {
   const authors = await AuthorDto.getAuthors()
   ctx.body = authors
-})
-
-authorApi.get('/articles', async (ctx) => {
-  const v = await new PositiveIntegerValidator().validate(ctx, {
-    id: 'authorId'
-  })
-  const id = v.get('query.authorId')
-  const articles = await ArticleAuthorDto.getAuthorArticles(id)
-  ctx.body = articles
 })
 
 authorApi.get('/info', new Auth().m, async (ctx) => {
