@@ -5,16 +5,21 @@ module.exports = {
     host: 'localhost',
     port: 3306,
     user: '',
-    password: ''
+    password: '',
+    logging: false,
+    timezone: '+08:00'
   },
-  pagination: {
-    pageDefault: 0,     // 分页默认页码
-    countDefault: 10    // 分页默认一页的数量
+  paginate: {
+    pageDefault: 0,     // 默认页码
+    countDefault: 10    // 默认一页的数量
   },
   // JWT
   security: {
     secretKey: '',
-    expiresIn: 60 * 60 * 2
+    accessExp: 60 * 60,  // 1h
+    // accessExp: 20,  // 20s 测试令牌过期
+    // refreshExp 设置refresh_token的过期时间，默认一个月
+    refreshExp: 60 * 60 * 24 * 30,
   },
   host: 'http://localhost:3000'
 }

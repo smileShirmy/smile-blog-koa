@@ -229,7 +229,10 @@ class ArticleDao {
     const statusId = v.get('query.statusId')
     const starId = v.get('query.starId')
     const search = v.get('query.search')
+    const start = v.get('query.page');
+    const pageCount = v.get('query.count');
 
+    // step1: 获取关联表的文章 id 交集
     let ids = []
     if (authorId !== 0 || tagId !== 0) {
       // 求交集
@@ -255,6 +258,7 @@ class ArticleDao {
       }
     }
   
+    // step2: 获取筛选条件
     let query = {
       category_id: categoryId === 0 ? undefined : categoryId,
       status: statusId === 0 ? undefined : statusId,
@@ -284,36 +288,43 @@ class ArticleDao {
       ]
     } : {}
 
-    // 构建查询条件
+    // step3: 构建查询条件
     const where = {
       ...target,
       ...opIn,
       ...like
     }
 
-    const articles = await Article.findAll({
+    const { rows, count } = await Article.findAndCountAll({
       where,
       order: [
         ['created_date', 'DESC']
       ],
+      offset: start * pageCount,
+      limit: pageCount,
       attributes: {
         exclude: isFont ? ['content', 'public', 'status'] : ['content']
-      }
+      },
     })
-    for (let i = 0; i < articles.length; i++) {
-      const id = articles[i].id
-      let article = articles[i]
+
+    for (let i = 0; i < rows.length; i++) {
+      const id = rows[i].id
+      let article = rows[i]
       await article.setDataValue('tags', await ArticleTagDto.getArticleTag(id))
       await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(id, {
         attributes: { exclude: ['auth', 'description', 'email'] }
       }))
-      await article.setDataValue('category',  await CategoryDto.getCategory(articles[i].category_id, {
+      await article.setDataValue('category',  await CategoryDto.getCategory(rows[i].category_id, {
         attributes: { exclude: ['description', 'cover']}
       }))
       await article.setDataValue('comment_count', await CommentDto.findCommentCount(id))
       article.exclude = ['category_id']
     }
-    return articles
+
+    return {
+      articles: rows,
+      total: count
+    }
   }
 
   async deleteArticle(id) {

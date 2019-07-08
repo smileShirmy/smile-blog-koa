@@ -1,5 +1,5 @@
 const { LinValidator, Rule } = require('../../core/lin-validator')
-const { PositiveIntegerValidator} = require('./common')
+const { PositiveIntegerValidator, PaginateValidator } = require('./common')
 
 class CreateOrUpdateArticleValidator extends LinValidator {
   constructor() {
@@ -78,7 +78,7 @@ function checkAuthors(val) {
   }
 }
 
-class GetArticlesValidator extends LinValidator {
+class GetArticlesValidator extends PaginateValidator {
   constructor() {
     super()
     this.categoryId = [
