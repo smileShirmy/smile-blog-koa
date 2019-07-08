@@ -327,6 +327,41 @@ class ArticleDao {
     }
   }
 
+  // 前端展示搜索文章
+  async searchArticles(v) {
+    const search = v.get('query.search')
+    const start = v.get('query.page');
+    const pageCount = v.get('query.count');
+
+    const { rows, count } = await Article.scope('frontShow').findAndCountAll({
+      where: {
+        [Op.or]: [
+          {
+            title: {
+              [Op.like]: `${search}%`,
+            }
+          },
+          {
+            content: {
+              [Op.like]: `${search}%`,
+            }
+          }
+        ]
+      },
+      order: [
+        ['created_date', 'DESC']
+      ],
+      attributes: ['id', 'title', 'created_date', 'star'],
+      offset: start * pageCount,
+      limit: pageCount,
+    })
+
+    return {
+      articles: rows,
+      total: count
+    }
+  }
+
   async deleteArticle(id) {
     const article = await Article.findOne({
       where: {

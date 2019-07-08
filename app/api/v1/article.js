@@ -7,7 +7,8 @@ const {
   ReplyCommentValidator,
   GetArticlesValidator,
   SetPublicValidator,
-  SetStarValidator
+  SetStarValidator,
+  SearchArticlesValidator
 } = require('@validator/article')
 const { success } = require('../../lib/helper')
 const { Auth } = require('../../../middleware/auth')
@@ -68,8 +69,8 @@ articleApi.put('/like', async (ctx) => {
 articleApi.get('/articles', new Auth().m, async (ctx) => {
   const v = await new GetArticlesValidator().validate(ctx)
   
-  const articles = await ArticleDto.getArticles(v)
-  ctx.body = articles
+  const result = await ArticleDto.getArticles(v)
+  ctx.body = result
 })
 
 // 展示前端 获取全部文章
@@ -82,8 +83,16 @@ articleApi.get('/blog/articles', async (ctx) => {
   ctx.query.starId = '0'
   const v = await new GetArticlesValidator().validate(ctx)
 
-  const articles = await ArticleDto.getArticles(v, true)
-  ctx.body = articles
+  const result = await ArticleDto.getArticles(v, true)
+  ctx.body = result
+})
+
+// 搜索文章
+articleApi.get('/search/articles', async (ctx) => {
+  const v = await new SearchArticlesValidator().validate(ctx)
+  
+  const result = await ArticleDto.searchArticles(v)
+  ctx.body = result
 })
 
 articleApi.get('/archive', async (ctx) => {

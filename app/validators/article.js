@@ -111,8 +111,20 @@ class GetArticlesValidator extends PaginateValidator {
         min: 0
       })
     ]
-    this.query = [
+    this.search = [
       new Rule('isOptional'),
+      new Rule('isLength', '关键词必须在1~10个字符之间', {
+        min: 1,
+        max: 10
+      })
+    ]
+  }
+}
+
+class SearchArticlesValidator extends PaginateValidator {
+  constructor() {
+    super()
+    this.search = [
       new Rule('isLength', '关键词必须在1~10个字符之间', {
         min: 1,
         max: 10
@@ -187,5 +199,6 @@ module.exports = {
   ReplyCommentValidator,
   GetArticlesValidator,
   SetPublicValidator,
-  SetStarValidator
+  SetStarValidator,
+  SearchArticlesValidator
 }
