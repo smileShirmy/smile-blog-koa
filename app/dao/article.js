@@ -221,7 +221,7 @@ class ArticleDao {
    * @param {Object} v 操作对象
    * @param {Boolean} isFont 是否展示端
    */
-  async getArticles(v, isFont = false ) {
+  async getArticles(v, isFont = false) {
     const categoryId = v.get('query.categoryId')
     const authorId = v.get('query.authorId')
     const tagId = v.get('query.tagId')

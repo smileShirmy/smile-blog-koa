@@ -20,14 +20,6 @@ categoryApi.get('/categories', async (ctx) => {
   ctx.body = categories
 })
 
-// 获取分类详情
-categoryApi.get('/', async (ctx) => {
-  const v = await new PositiveIntegerValidator().validate(ctx)
-  const id = v.get('query.id')
-  const category = await CategoryDto.getCategory(id)
-  ctx.body = category
-})
-
 categoryApi.post('/', new Auth().m, async (ctx) =>   {
   const v = await new CreateOrUpdateCategoryValidator().validate(ctx)
   await CategoryDto.createCategory(v)

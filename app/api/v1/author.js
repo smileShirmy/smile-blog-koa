@@ -26,15 +26,6 @@ authorApi.post('/', new Auth().m, async (ctx) => {
   success('创建用户成功')
 })
 
-// 获取作者详情
-authorApi.get('/detail', async (ctx) => {
-  const v = await new PositiveIntegerValidator().validate(ctx)
-  const id = v.get('query.id')
-
-  const author = await AuthorDto.getAuthorDetail(id)
-  ctx.body = author
-})
-
 // 更新作者信息
 authorApi.put('/info', new Auth().m, async (ctx) => {
   const v = await new UpdateAuthorValidator().validate(ctx)

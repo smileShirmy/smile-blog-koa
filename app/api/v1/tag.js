@@ -3,7 +3,6 @@ const Router = require('koa-router')
 const { success } = require('../../lib/helper')
 const { CreateOrUpdateTagValidator } = require('@validator/tag')
 const { getSafeParamId } = require('../../lib/util')
-const { NotFound } = require('@exception')
 const { PositiveIntegerValidator } = require('@validator/common')
 const { Auth } = require('../../../middleware/auth')
 
@@ -18,18 +17,6 @@ const TagDto = new TagDao()
 tagApi.get('/tags', async (ctx) => {
   const tags = await TagDto.getTags()
   ctx.body = tags
-})
-
-tagApi.get('/', async (ctx) => {
-  const v = await new PositiveIntegerValidator().validate(ctx)
-  const id = v.get('query.id')
-  const tag = await TagDto.getTag(id)
-  if (!tag) {
-    throw new NotFound({
-      msg: '没有找到相关标签'
-    })
-  }
-  ctx.body = tag
 })
 
 tagApi.post('/', new Auth().m, async (ctx) => {
