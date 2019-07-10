@@ -1,8 +1,8 @@
 const Router = require('koa-router')
 
 const { success } = require('../../lib/helper')
-const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator, PasswordValidator, SelfPasswordValidator } = require('@validator/author')
-const { NotEmptyValidator, PositiveIntegerValidator } = require('@validator/common')
+const { CreateAuthorValidator, UpdateAuthorValidator, LoginValidator, PasswordValidator, SelfPasswordValidator, AvatarUpdateValidator } = require('@validator/author')
+const { PositiveIntegerValidator } = require('@validator/common')
 const { Auth, RefreshAuth, generateToken } = require('../../../middleware/auth')
 const { getSafeParamId } = require('../../lib/util')
 const { Forbidden } = require('@exception')
@@ -42,6 +42,16 @@ authorApi.put('/info', new Auth().m, async (ctx) => {
 
   await AuthorDto.updateAuthor(v, id)
   success('更新用户成功')
+})
+
+// 修改用户头像
+authorApi.put('/avatar', new Auth().m, async (ctx) => {
+  const v = await new AvatarUpdateValidator().validate(ctx)
+  const avatar = v.get('body.avatar')
+  const id = ctx.currentAuthor.id
+
+  await AuthorDto.updateAvatar(avatar, id)
+  success('更新头像成功')
 })
 
 // 超级管理员修改作者的密码

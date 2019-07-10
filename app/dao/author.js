@@ -53,6 +53,18 @@ class AuthorDao {
     author.save()
   }
 
+  async updateAvatar(avatar, id) {
+    const author = await Author.findByPk(id)
+    if (!author) {
+      throw new NotFound({
+        msg: '没有找到相关作者'
+      })
+    }
+    author.avatar = avatar
+    author.save()
+    return author
+  }
+
   async deleteAuthor(id) {
     const author = await Author.findOne({
       where: {

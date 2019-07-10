@@ -21,6 +21,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "bcryptjs": "^2.4.3",
+    "co-busboy": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
@@ -30,8 +31,10 @@
     "lodash": "^4.17.11",
     "module-alias": "^2.2.0",
     "mysql2": "^1.6.5",
+    "qiniu": "^7.2.2",
     "require-directory": "^2.1.1",
     "sequelize": "^5.8.9",
+    "stream-wormhole": "^1.1.0",
     "validator": "^11.0.0"
   },
   "_moduleAliases": {

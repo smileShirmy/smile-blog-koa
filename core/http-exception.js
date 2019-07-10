@@ -79,6 +79,33 @@ class RefreshException extends HttpException {
   }
 }
 
+class FileTooLargeException extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || '文件体积过大'
+    this.errorCode = errorCode || 10110
+    this.code = 413
+  }
+}
+
+class FileTooManyException extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || '文件数量过多'
+    this.errorCode = errorCode || 10120
+    this.code = 413
+  }
+}
+
+class FileExtensionException extends HttpException {
+  constructor(msg, errorCode) {
+    super()
+    this.msg = msg || '文件扩展名不符合规范'
+    this.errorCode = errorCode || 10130
+    this.code = 401
+  }
+}
+
 module.exports = {
   HttpException,
   ParameterException,
@@ -88,5 +115,8 @@ module.exports = {
   AuthFailed,
   InvalidToken,
   ExpiredToken,
-  RefreshException
+  RefreshException,
+  FileTooLargeException,
+  FileTooManyException,
+  FileExtensionException,
 }
