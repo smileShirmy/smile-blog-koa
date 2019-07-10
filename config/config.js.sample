@@ -15,11 +15,26 @@ module.exports = {
   },
   // JWT
   security: {
-    secretKey: '',
+    secretKey: 'secretKey',
     accessExp: 60 * 60,  // 1h
     // accessExp: 20,  // 20s 测试令牌过期
     // refreshExp 设置refresh_token的过期时间，默认一个月
     refreshExp: 60 * 60 * 24 * 30,
+  },
+  // 文件上传
+  file: {
+    singleLimit: 1024 * 1024 * 2,
+    totalLimit: 1024 * 1024 * 20,
+    count: 10,
+    exclude: []
+    // include:[]
+  },
+  // 七牛相关配置
+  qiniu: {
+    accessKey: '',
+    secretKey: '',
+    bucket: '',
+    siteDomain: ''
   },
   host: 'http://localhost:3000'
 }
