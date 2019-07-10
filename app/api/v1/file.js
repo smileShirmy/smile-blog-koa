@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 
-const { UpLoader } = require('../../lib/file')
+const { UpLoader } = require('../../lib/upload')
 const { Auth } = require('../../../middleware/auth')
 
 const fileApi = new Router({
