@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { Author } = require('@models/author')
+const { Author } = require('@models')
 const { TokenType } = require('../app/lib/enums')
 
 const { Forbidden, AuthFailed, NotFound, InvalidToken, ExpiredToken, RefreshException } = require('@exception')

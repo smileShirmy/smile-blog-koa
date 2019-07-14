@@ -1,19 +1,17 @@
 const { sequelize } = require('../../core/db')
-const { omitBy, isUndefined, intersection } = require('lodash')
+const { omitBy, isUndefined, intersection, unset } = require('lodash')
 const { Op } = require('sequelize') 
 
 const { NotFound, Forbidden } = require('@exception')
 
-const { Article } = require('@models/article')
+const { Article, Tag, Author, Comment, Category } = require('@models')
 const { ArticleTagDao } = require('@dao/articleTag')
 const { ArticleAuthorDao } = require('@dao/articleAuthor')
 const { CategoryDao } = require('@dao/category')
-const { CommentDao } = require('@dao/comment')
 
 const ArticleTagDto = new ArticleTagDao()
 const ArticleAuthorDto = new ArticleAuthorDao()
 const CategoryDto = new CategoryDao()
-const CommentDto = new CommentDao()
 
 class ArticleDao {
   async createArticle(v) {
@@ -47,6 +45,7 @@ class ArticleDao {
         star: v.get('body.star'),
         like: 0
       }, { transaction: t })
+      
       const articleId = result.getDataValue('id')
       await ArticleTagDto.createArticleTag(articleId, v.get('body.tags'), { transaction: t })
       await ArticleAuthorDto.createArticleAuthor(articleId, v.get('body.authors'), { transaction: t })
@@ -297,32 +296,49 @@ class ArticleDao {
 
     const { rows, count } = await Article.findAndCountAll({
       where,
+      distinct: true,
+      offset: start * pageCount,
+      limit: pageCount,
       order: [
         ['created_date', 'DESC']
       ],
-      offset: start * pageCount,
-      limit: pageCount,
+      include: [
+        {
+          model: Author,
+          attributes: ['id', 'name', 'avatar'],
+          as: 'authors'
+        },
+        {
+          model: Tag,
+          as: 'tags'
+        },
+        {
+          model: Category,
+          attributes: ['id', 'name'],
+          as: 'category',
+        },
+        {
+          model: Comment,
+          as: 'comments',
+          attributes: ['id']
+        },
+      ],
       attributes: {
-        exclude: isFont ? ['content', 'public', 'status'] : ['content']
+        exclude: isFont
+        ? ['content', 'public', 'status']
+        : ['content']
       },
     })
 
-    for (let i = 0; i < rows.length; i++) {
-      const id = rows[i].id
-      let article = rows[i]
-      await article.setDataValue('tags', await ArticleTagDto.getArticleTag(id))
-      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(id, {
-        attributes: { exclude: ['auth', 'description', 'email'] }
-      }))
-      await article.setDataValue('category',  await CategoryDto.getCategory(rows[i].category_id, {
-        attributes: { exclude: ['description', 'cover']}
-      }))
-      await article.setDataValue('comment_count', await CommentDto.findCommentCount(id))
-      article.exclude = ['category_id']
-    }
+    const articles = JSON.parse(JSON.stringify(rows))
+    articles.forEach(v => {
+      v.comment_count = v.comments.length
+      unset(v, 'category_id')
+      unset(v, 'comments')
+    })
 
     return {
-      articles: rows,
+      articles,
       total: count
     }
   }

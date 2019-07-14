@@ -1,8 +1,6 @@
 const { Op } = require('sequelize')
 
-const { Author } = require('@models/author')
-const { ArticleAuthor } = require('@models/articleAuthor')
-const { Article } = require('@models/article')
+const { Author, ArticleAuthor } = require('@models')
 
 class ArticleAuthorDao {
   async createArticleAuthor(articleId, authors, options = {}) {

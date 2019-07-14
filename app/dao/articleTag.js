@@ -1,7 +1,6 @@
 const { Op } = require('sequelize')
 
-const { Tag } = require('@models/tag')
-const { ArticleTag } = require('@models/articleTag')
+const { Tag, ArticleTag } = require('@models')
 
 class ArticleTagDao {
   async createArticleTag(articleId, tags, options = {}) {

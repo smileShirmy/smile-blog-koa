@@ -1,6 +1,5 @@
 const { NotFound, Forbidden } = require('@exception')
-const { Tag } = require('@models/tag')
-const { ArticleTag } = require('@models/articleTag')
+const { Tag, ArticleTag } = require('@models')
 
 class TagDao {
   async createTag(v) {

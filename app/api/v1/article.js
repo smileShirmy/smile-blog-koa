@@ -13,8 +13,6 @@ const { Auth } = require('../../../middleware/auth')
 const { ArticleDao } = require('@dao/article')
 const { CommentDao } = require('@dao/comment')
 
-const { ArticleTag } = require('@models/articleTag')
-
 const articleApi = new Router({
   prefix: '/v1/article'
 })

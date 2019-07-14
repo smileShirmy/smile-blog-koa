@@ -1,8 +1,7 @@
 const { Op } = require('sequelize')
 
-const { Author } = require('@models/author')
-const { ArticleAuthor } = require('@models/articleAuthor')
-const { AuthFailed, Forbidden } = require('@exception')
+const { Author, ArticleAuthor } = require('@models')
+const { Forbidden, NotFound, ParameterException } = require('@exception')
 const { AuthType } = require('../lib/enums')
 const bcrypt = require('bcryptjs')
 
@@ -109,24 +108,24 @@ class AuthorDao {
     }
     const correct = bcrypt.compareSync(v.get('body.oldPassword'), author.password)
     if (!correct) {
-      throw new AuthFailed('原始密码不正确')
+      throw new ParameterException('原始密码不正确')
     }
     author.password = v.get('body.password')
     author.save()
   }
 
-  async verifyEmailPassword(ctx, name, password) {
+  async verifyPassword(ctx, name, password) {
     const author = await Author.findOne({
       where: {
         name
       }
     })
     if (!author) {
-      throw new AuthFailed('作者不存在')
+      throw new NotFound('作者不存在')
     }
     const correct = bcrypt.compareSync(password, author.password)
     if (!correct) {
-      throw new AuthFailed('密码不正确')
+      throw new ParameterException('密码不正确')
     }
     
     return author

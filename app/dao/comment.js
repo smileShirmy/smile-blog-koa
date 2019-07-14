@@ -1,7 +1,5 @@
 const { NotFound } = require('@exception')
-const { Comment } = require('@models/comment')
-const { Article } = require('@models/article')
-const { Sequelize } = require('sequelize')
+const { Comment, Article } = require('@models')
 
 class CommentDao {
   async createComment(v, articleId) {

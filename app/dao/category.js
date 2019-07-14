@@ -1,6 +1,5 @@
 const { NotFound, Forbidden } = require('@exception')
-const { Category } = require('@models/category')
-const { Article } = require('@models/article')
+const { Category, Article } = require('@models')
 
 class CategoryDao {
   async createCategory(v) {

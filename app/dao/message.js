@@ -1,4 +1,4 @@
-const { Message } = require('@models/message')
+const { Message } = require('@models')
 
 class MessageDao {
   async createMessage(v) {
