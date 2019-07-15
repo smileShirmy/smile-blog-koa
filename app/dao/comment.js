@@ -26,7 +26,7 @@ class CommentDao {
       order: [
         ['created_at', 'DESC']
       ],
-      attributes: { exclude: ['email', 'article_id'] }
+      attributes: { exclude: ['email', 'article_id', 'ArticleId'] }
     })
     comments.forEach(v => {
       v.setDataValue('created_date', v.created_at)
@@ -79,17 +79,6 @@ class CommentDao {
       email: v.get('body.email'),
       website: v.get('body.website'),
     })
-  }
-  
-  // 查找某篇文章的评论总数
-  async findCommentCount(articleId) {
-    let comments = await Comment.findAll({
-      where: {
-        article_id: articleId,
-      },
-      attributes: ['id']
-    })
-    return comments.length
   }
 }
 

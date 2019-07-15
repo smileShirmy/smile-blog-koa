@@ -95,8 +95,25 @@ class ArticleDao {
       where: {
         id
       },
+      include: [
+        {
+          model: Tag,
+          as: 'tags',
+          attributes: ['id', 'name']
+        },
+        {
+          model: Author,
+          as: 'authors',
+          attributes: ['id', 'name']
+        },
+        {
+          model: Category,
+          as: 'category',
+          attributes: ['id', 'name']
+        }
+      ],
       attributes: {
-        exclude: ['public', 'status']
+        exclude: ['public', 'status', 'description']
       }
     })
     if (!article) {
@@ -104,12 +121,6 @@ class ArticleDao {
         msg: '没有找到相关文章'
       })
     }
-    // 获取这篇文章下的所有标签
-    const tags = await ArticleTagDto.getArticleTag(id)
-    // 获取这篇文章下的所有作者
-    const authors = await ArticleAuthorDto.getArticleAuthor(id, {
-      attributes: { exclude: ['auth', 'description', 'email'] }
-    })
     // 获取这篇文章相关分类下的文章列表(除了自己)
     const categoryArticles = await Article.scope('frontShow').findAll({
       where: {
@@ -124,8 +135,6 @@ class ArticleDao {
 
     await article.increment('views', { by: 1 })
 
-    article.setDataValue('tags', tags)
-    article.setDataValue('authors', authors)
     article.setDataValue('categoryArticles', categoryArticles)
 
     return article
@@ -181,20 +190,20 @@ class ArticleDao {
       where: {
         star: 2,      // 精选
       },
-      attributes: {
-        exclude: ['content', 'like', 'public', 'star', 'status', 'views']
-      }
+      include: [
+        {
+          model: Author,
+          as: 'authors',
+          attributes: ['id', 'name']
+        },
+        {
+          model: Category,
+          as: 'category',
+          attributes: ['id', 'name', 'cover']
+        }
+      ],
+      attributes: ['id', 'title', 'cover', 'created_date'],
     })
-    for (let i = 0; i < articles.length; i++) {
-      let article = articles[i]
-      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(articles[i].id, {
-        attributes: { exclude: ['auth', 'description', 'email', 'avatar'] }
-      }))
-      await article.setDataValue('category',  await CategoryDto.getCategory(articles[i].category_id, {
-        attributes: { exclude: ['description', 'cover']}
-      }))
-      article.exclude = ['category_id']
-    }
     return articles
   }
 
@@ -204,14 +213,15 @@ class ArticleDao {
       order: [
         ['created_date', 'DESC']
       ],
+      include: [
+        {
+          model: Author,
+          as: 'authors',
+          attributes: ['id', 'name', 'avatar']
+        }
+      ],
       attributes: ['id', 'title', 'created_date']
     })
-    for (let i = 0; i < articles.length; i++) {
-      let article = articles[i]
-      await article.setDataValue('authors', await ArticleAuthorDto.getArticleAuthor(articles[i].id, {
-        attributes: { exclude: ['auth', 'description', 'email'] }
-      }))
-    }
     return articles
   }
 
