@@ -123,6 +123,10 @@ class ArticleDao {
     }
     // 获取这篇文章相关分类下的文章列表(除了自己)
     const categoryArticles = await Article.scope('frontShow').findAll({
+      limit: 10,
+      order: [
+        ['created_date', 'DESC']
+      ],
       where: {
         category_id: article.category_id,
         id: {

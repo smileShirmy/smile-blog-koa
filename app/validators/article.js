@@ -18,6 +18,7 @@ class CreateOrUpdateArticleValidator extends LinValidator {
       })
     ]
     this.cover = [
+      new Rule('isOptional'),
       new Rule('isURL', '不符合URL规范')
     ]
     this.createdDate = new Rule('isNotEmpty', '创建时间不能为空');
