@@ -1,0 +1,18 @@
+language: node_js
+cache:
+  directories:
+  - node_modules
+node_js: stable
+branches:
+  only:
+  - master
+install:
+- npm install
+before_install:
+- openssl aes-256-cbc -K $encrypted_72aaa3a73d74_key -iv $encrypted_72aaa3a73d74_iv -in id_rsa.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+after_success:
+- ssh "$DEPLOY_USER"@"$DEPLOY_HOST" -o StrictHostKeyChecking=no 'cd /data/smile-blog-koa && git pull && bash ./script/deploy.sh'
+addons:
+  ssh_known_hosts:
+  - "$DEPLOY_HOST"
