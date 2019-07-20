@@ -15,6 +15,7 @@ module.exports = {
   },
   // JWT
   security: {
+    // secretKey 需要比较复杂的字符串
     secretKey: 'secretKey',
     accessExp: 60 * 60,  // 1h
     // accessExp: 20,  // 20s 测试令牌过期
@@ -23,10 +24,10 @@ module.exports = {
   },
   // 文件上传
   file: {
-    singleLimit: 1024 * 1024 * 2,
-    totalLimit: 1024 * 1024 * 20,
-    count: 10,
-    exclude: []
+    singleLimit: 1024 * 1024 * 2, // 单个文件大小限制
+    totalLimit: 1024 * 1024 * 20, // 多个文件大小限制
+    count: 10,                    // 单次最大上传数量
+    exclude: []                   // 禁止上传格式
     // include:[]
   },
   // 七牛相关配置

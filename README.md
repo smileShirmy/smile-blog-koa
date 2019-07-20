@@ -1,27 +1,39 @@
-# smile-blog-koa
+## smile-blog-koa
 
-## config
+[![Build Status](https://www.travis-ci.org/smileShirmy/smile-blog-koa.svg?branch=master)](https://www.travis-ci.org/smileShirmy/smile-blog-koa)
 
-```js
+- 权限控制
+- 无感知Token刷新
+- 支持七牛云文件上传
+- HTTPS反向代理
+- Koa2 + Sequelize
+- MySQL
 
+该项目为服务端部分，其它部分可点击下面的链接
+
+- 展示前端 [smile-blog-nuxt](https://github.com/smileShirmy/smile-blog-nuxt)
+- 管理后台 [smile-blog-admin](https://github.com/smileShirmy/smile-blog-admin)
+- 服务端 [smile-blog-koa](https://github.com/smileShirmy/smile-blog-koa)
+
+
+## Setup
+
+- 需要把`config`目录下的`config.js.sample`重命名为`config.js`，然后进行相关参数的配置
+- 开始需要关闭权限校验中间件，通过`Postman`创建一个超级管理员
+- 启动该项目前需要全局安装`nodemon`和`pm2`
+
+```bash
+npm install -g nodemon
+npm install -g pm2
 ```
 
-## Mysql 相关
+```bash
+# install
+npm install
 
-### 1. Warning: Using a password on the command line interface can be insecure
+# development
+nodemon
 
-```
-1. mysql_config_editor set --login-path=dbname --host=127.0.0.1 --user=root --password
-2. 输入密码
-3. mysql_config_editor print --all
-4. mysql --login-path=dbname
-```
-
-### 2. 1130, "Host 'xxxx' is not allowed to connect to this MySQL server"
-
-```
-1. update user set host='%' where user='root';
-2. use mysql;
-3. select host,user from user;
-4. flush privileges;
+# production 
+pm2 start app
 ```
