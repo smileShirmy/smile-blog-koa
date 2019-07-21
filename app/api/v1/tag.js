@@ -14,7 +14,7 @@ const tagApi = new Router({
 
 const TagDto = new TagDao()
 
-tagApi.get('/tags', async (ctx) => {
+tagApi.get('/tags', new Auth().m, async (ctx) => {
   const tags = await TagDto.getTags()
   ctx.body = tags
 })

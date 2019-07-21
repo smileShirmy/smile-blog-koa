@@ -15,7 +15,7 @@ const categoryApi = new Router({
 const CategoryDto = new CategoryDao()
 
 // 获取所有分类
-categoryApi.get('/categories', async (ctx) => {
+categoryApi.get('/categories', new Auth().m, async (ctx) => {
   const categories = await CategoryDto.getCategories()
   ctx.body = categories
 })

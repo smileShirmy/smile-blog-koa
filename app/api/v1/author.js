@@ -116,7 +116,7 @@ authorApi.get('/authors/admin', new Auth().m, async (ctx) => {
 })
 
 // 获取全部作者
-authorApi.get('/authors', async (ctx) => {
+authorApi.get('/authors', new Auth().m, async (ctx) => {
   const authors = await AuthorDto.getAuthors()
   ctx.body = authors
 })

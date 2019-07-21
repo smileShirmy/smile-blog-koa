@@ -35,7 +35,6 @@ class UpLoader {
       const promise = new Promise((resolve, reject) => {
         formUploader.putStream(uploadToken, key, readableStream, putExtra, (respErr, respBody, respInfo) => {
           if (respErr) {
-            console.log(respErr)
             reject(respErr)
           }
   

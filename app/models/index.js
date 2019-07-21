@@ -6,6 +6,7 @@ const { Category } = require('./category')
 const { Comment } = require('./comment')
 const { Message } = require('./message')
 const { Tag } = require('./tag')
+const { Friend } = require('./friend')
 
 // 关联作者和评论
 Article.hasMany(Comment, {
@@ -68,5 +69,6 @@ module.exports = {
   Category,
   Comment,
   Message,
-  Tag
+  Tag,
+  Friend
 }

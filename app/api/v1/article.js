@@ -37,7 +37,7 @@ articleApi.put('/', new Auth().m, async (ctx) => {
 })
 
 // 获取文章详情
-articleApi.get('/', async (ctx) => {
+articleApi.get('/', new Auth().m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const article = await ArticleDto.getArticle(v.get('query.id'))
 
@@ -45,19 +45,11 @@ articleApi.get('/', async (ctx) => {
 })
 
 // 获取文章内容
-articleApi.get('/content', async (ctx) => {
+articleApi.get('/content', new Auth().m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx)
   const content = await ArticleDto.getContent(v.get('query.id'))
 
   ctx.body = content
-})
-
-// 点赞某篇文章
-articleApi.put('/like', async (ctx) => {
-  const v = await new PositiveIntegerValidator().validate(ctx)
-  const id = v.get('body.id')
-  await ArticleDto.likeArticle(id)
-  success('点赞文章成功')
 })
 
 // 管理后台 获取全部文章
@@ -97,7 +89,7 @@ articleApi.put('/star', new Auth().m, async (ctx) => {
 })
 
 // 获取文章下的全部评论
-articleApi.get('/get/comment', async (ctx) => {
+articleApi.get('/get/comment', new Auth().m, async (ctx) => {
   const v = await new PositiveIntegerValidator().validate(ctx, {
     id: 'articleId'
   })

@@ -12,7 +12,7 @@ const messageApi = new Router({
 })
 
 // 获取所有留言
-messageApi.get('/messages', async (ctx) => {
+messageApi.get('/messages', new Auth().m, async (ctx) => {
   const v = await new PaginateValidator().validate(ctx)
   const { rows, total } = await MessageDto.getMessages(v)
   ctx.body = {
