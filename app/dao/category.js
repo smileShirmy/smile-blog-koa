@@ -44,6 +44,7 @@ class CategoryDao {
     }
     category.name = v.get('body.name')
     category.description = v.get('body.description')
+    category.cover = v.get('body.cover')
     category.save()
   }
 
