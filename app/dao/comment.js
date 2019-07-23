@@ -26,7 +26,7 @@ class CommentDao {
       order: [
         ['created_at', 'DESC']
       ],
-      attributes: { exclude: ['email', 'article_id', 'ArticleId'] }
+      attributes: { exclude: ['article_id', 'ArticleId'] }
     })
     comments.forEach(v => {
       v.setDataValue('created_date', v.created_at)
