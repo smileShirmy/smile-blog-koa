@@ -19,6 +19,7 @@ const authorApi = new Router({
 })
 
 // 创建作者
+// 如果需要创建超级管理员 请先去掉 new Auth().m
 authorApi.post('/', new Auth().m, async (ctx) => {
   const v = await new CreateAuthorValidator().validate(ctx)
 
