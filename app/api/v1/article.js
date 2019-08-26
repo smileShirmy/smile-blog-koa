@@ -44,6 +44,14 @@ articleApi.get('/', new Auth().m, async (ctx) => {
   ctx.body = article
 })
 
+// 获取文章内容
+articleApi.get('/content', new Auth().m, async (ctx) => {
+  const v = await new PositiveIntegerValidator().validate(ctx)
+  const content = await ArticleDto.getContent(v.get('query.id'))
+
+  ctx.body = content
+})
+
 // 管理后台 获取全部文章
 articleApi.get('/articles', new Auth().m, async (ctx) => {
   const v = await new GetArticlesValidator().validate(ctx)
