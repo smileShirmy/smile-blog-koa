@@ -33,7 +33,7 @@
     "mysql2": "^1.6.5",
     "qiniu": "^7.2.2",
     "require-directory": "^2.1.1",
-    "sequelize": "^5.10.1",
+    "sequelize": "^5.15.1",
     "stream-wormhole": "^1.1.0",
     "validator": "^11.1.0"
   },
