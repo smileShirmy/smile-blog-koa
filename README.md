@@ -40,7 +40,7 @@ pm2 start app
 
 ### 创建超级管理员
 
-1. 打开`app/api/v1/article.js`，找到`authorApi.post('/')`接口，去掉`new Auth().m`中间件
+1. 打开`app/api/v1/author.js`，找到`authorApi.post('/')`接口，去掉`new Auth().m`中间件
 2. 打开`Postman`发送`POST`请求，`Content-Type`设置为`application/json`，`body`输入以下内容：
 
 ```javascript
